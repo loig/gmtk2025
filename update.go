@@ -18,5 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 func (g *game) Update() error {
+
+	g.sequencer.update(&g.soundEngine)
+
+	g.soundEngine.playNow()
+
 	return nil
 }

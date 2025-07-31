@@ -17,4 +17,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
-type game struct{}
+type game struct {
+	soundEngine soundEngine
+	sequencer   sequencer
+}
+
+func newGame() (g game) {
+	g.soundEngine = newSoundEngine()
+	g.sequencer = newSequencer(120, 4)
+	return
+}

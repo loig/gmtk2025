@@ -25,11 +25,11 @@ import (
 
 func main() {
 
-	g := &game{}
+	g := newGame()
 
 	ebiten.SetWindowTitle("CUB 2: Origins")
 
-	if err := ebiten.RunGame(g); err != nil {
+	if err := ebiten.RunGame(&g); err != nil {
 		log.Fatal(err)
 	}
 
