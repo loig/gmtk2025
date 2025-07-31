@@ -20,10 +20,13 @@ package main
 type game struct {
 	soundEngine soundEngine
 	sequencer   sequencer
+	character   character
 }
 
 func newGame() (g game) {
 	g.soundEngine = newSoundEngine()
-	g.sequencer = newSequencer(120, 4)
+	g.sequencer = newSequencer(100, 4)
+	g.character.reset(testLevel)
+	g.character.moveSequence = []int{moveDown, moveLeft, moveUp, moveRight, moveRight, moveRight, moveDown, moveDown}
 	return
 }

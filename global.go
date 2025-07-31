@@ -17,25 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
-import "log"
-
-func (g *game) Update() error {
-
-	newBeat, halfBeat := g.sequencer.update(&g.soundEngine)
-
-	if newBeat {
-		g.character.updateOnBeat()
-	}
-
-	if halfBeat {
-		g.character.updateOnHalfBeat()
-	}
-
-	if g.character.checkGoal() {
-		log.Print("The end")
-	}
-
-	g.soundEngine.playNow()
-
-	return nil
-}
+const (
+	globalTileSize = 20
+)
