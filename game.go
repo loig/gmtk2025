@@ -25,8 +25,8 @@ type game struct {
 
 func newGame() (g game) {
 	g.soundEngine = newSoundEngine()
-	g.sequencer = newSequencer(100, 4)
+	g.sequencer = newSequencer(110, 4)
 	g.character.reset(testLevel)
-	g.character.moveSequence = []int{moveDown, moveLeft, moveUp, moveRight, moveRight, moveRight, moveDown, moveDown}
+	g.character.moveSequence = []int{moveDown, moveRight, nothing, moveRight, moveRight, moveLeft, moveDown, moveUp}
 	return
 }

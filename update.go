@@ -24,7 +24,10 @@ func (g *game) Update() error {
 	newBeat, halfBeat := g.sequencer.update(&g.soundEngine)
 
 	if newBeat {
-		g.character.updateOnBeat()
+		playSound, soundID := g.character.updateOnBeat()
+		if playSound {
+			g.soundEngine.nextSounds[soundID] = true
+		}
 	}
 
 	if halfBeat {

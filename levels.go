@@ -44,10 +44,14 @@ const (
 // A level for testing purpose (will not be used in the final game).
 var testLevel level = level{
 	area: [][]int{
-		{levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelWall, levelWall, levelFloor},
-		{levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
 	},
 	sequenceLen: 8,
 	startX:      0, startY: 0,

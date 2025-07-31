@@ -33,6 +33,21 @@ var kickBytes []byte
 //go:embed assets/SNR07.WAV
 var snareBytes []byte
 
+//go:embed assets/ArpBC3.wav
+var c3Bytes []byte
+
+//go:embed assets/ArpBC4.wav
+var c4Bytes []byte
+
+//go:embed assets/ArpBE3.wav
+var e3Bytes []byte
+
+//go:embed assets/ArpBG3.wav
+var g3Bytes []byte
+
+//go:embed assets/RolandEBlip22.wav
+var blipBytes []byte
+
 // A sound engine is responsible for playing sounds
 // so that the same sound is not played twice at the same
 // frame.
@@ -46,6 +61,11 @@ type soundEngine struct {
 const (
 	soundKick int = iota
 	soundSnare
+	soundC3
+	soundC4
+	soundE3
+	soundG3
+	soundBlip
 	numSounds
 )
 
@@ -74,6 +94,50 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(c3Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundC3], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(c4Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundC4], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(e3Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundE3], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(g3Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundG3], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(blipBytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundBlip], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
 	return
 }
 

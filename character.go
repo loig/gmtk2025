@@ -71,7 +71,7 @@ func (c *character) updateOnBeat() (playSound bool, soundID int) {
 		playSound, soundID = getMoveSoundId(c.moveSequence[c.nextMovePosition])
 	} else {
 		playSound = true
-		soundID = 0
+		soundID = soundBlip
 	}
 	c.nextMovePosition = (c.nextMovePosition + 1) % len(c.moveSequence)
 	return
@@ -121,13 +121,13 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 
 	switch move {
 	case moveUp:
-		soundID = 0
+		soundID = soundC3
 	case moveRight:
-		soundID = 0
+		soundID = soundE3
 	case moveDown:
-		soundID = 0
+		soundID = soundG3
 	case moveLeft:
-		soundID = 0
+		soundID = soundC4
 	}
 
 	return true, soundID
