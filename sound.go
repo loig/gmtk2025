@@ -33,6 +33,9 @@ var kickBytes []byte
 //go:embed assets/SNR07.WAV
 var snareBytes []byte
 
+//go:embed assets/ArpBC2.wav
+var c2Bytes []byte
+
 //go:embed assets/ArpBC3.wav
 var c3Bytes []byte
 
@@ -61,6 +64,7 @@ type soundEngine struct {
 const (
 	soundKick int = iota
 	soundSnare
+	soundC2
 	soundC3
 	soundC4
 	soundE3
@@ -90,6 +94,15 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 	engine.sounds[soundSnare], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(c2Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundC2], err = io.ReadAll(sound)
 	if err != nil {
 		log.Panic("Audio problem: ", err)
 	}

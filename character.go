@@ -30,6 +30,7 @@ type character struct {
 	x, y                   int
 	moveSequence           []int
 	nextMovePosition       int
+	currentMovePosition    int
 	levelArea              [][]int
 	levelGoalX, levelGoalY int
 	displayX, displayY     float64
@@ -58,6 +59,7 @@ func (c *character) reset(level level) {
 		c.moveSequence[pos] = nothing
 	}
 	c.nextMovePosition = 0
+	c.currentMovePosition = 0
 	c.levelArea = make([][]int, len(level.area))
 	for linePos, line := range level.area {
 		c.levelArea[linePos] = make([]int, len(line))
@@ -82,7 +84,12 @@ func (c *character) updateOnBeat() (playSound bool, soundID int) {
 		playSound = true
 		soundID = soundBlip
 	}
-	c.nextMovePosition = (c.nextMovePosition + 1) % len(c.moveSequence)
+	c.currentMovePosition = c.nextMovePosition
+	if c.moveSequence[c.nextMovePosition] == moveReset {
+		c.nextMovePosition = 0
+	} else {
+		c.nextMovePosition = (c.nextMovePosition + 1) % len(c.moveSequence)
+	}
 	return
 }
 
@@ -142,6 +149,8 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 		soundID = soundG3
 	case moveLeft:
 		soundID = soundC4
+	case moveReset:
+		soundID = soundC2
 	}
 
 	return true, soundID
