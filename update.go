@@ -37,7 +37,7 @@ func (g *game) Update() error {
 		g.buttonSet.update(g.cursor.x, g.cursor.y, g.state == stateSetupSequence)
 
 	if clicked && buttonKind == buttonReset {
-		g.character.reset(levelSet[g.level])
+		g.character.reset(levelSet[g.level], false)
 		g.state = stateSetupSequence
 	} else {
 

@@ -44,7 +44,7 @@ func newGame() (g game) {
 }
 
 func (g *game) setLevel() {
-	g.character.reset(levelSet[g.level])
+	g.character.reset(levelSet[g.level], true)
 	g.state = stateSetupSequence
 	g.buttonSet.setupButtons(len(g.character.moveSequence))
 }

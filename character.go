@@ -51,12 +51,14 @@ const (
 // of moves, moving the character to the start,
 // copying the area (in case consumables were
 // used).
-func (c *character) reset(level level) {
+func (c *character) reset(level level, resetSequence bool) {
 	c.x = level.startX
 	c.y = level.startY
-	c.moveSequence = make([]int, level.sequenceLen)
-	for pos := 0; pos < len(c.moveSequence); pos++ {
-		c.moveSequence[pos] = nothing
+	if resetSequence {
+		c.moveSequence = make([]int, level.sequenceLen)
+		for pos := 0; pos < len(c.moveSequence); pos++ {
+			c.moveSequence[pos] = nothing
+		}
 	}
 	c.nextMovePosition = 0
 	c.currentMovePosition = 0
