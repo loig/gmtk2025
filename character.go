@@ -175,10 +175,4 @@ func (c character) draw(screen *ebiten.Image) {
 			subImageX+(globalTileSize+2*globalTileMargin),
 			globalTileSize+2*globalTileMargin)).(*ebiten.Image),
 		options)
-
-	drawButtons(
-		c.moveSequence,
-		(c.nextMovePosition+len(c.moveSequence)-1)%len(c.moveSequence),
-		c.onBeat,
-		screen)
 }

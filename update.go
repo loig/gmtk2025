@@ -17,7 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
-import "log"
+import (
+	"log"
+)
 
 func (g *game) Update() error {
 
@@ -26,18 +28,45 @@ func (g *game) Update() error {
 	newBeat, halfBeat := g.sequencer.update(&g.soundEngine)
 
 	if newBeat {
-		playSound, soundID := g.character.updateOnBeat()
-		if playSound {
-			g.soundEngine.nextSounds[soundID] = true
-		}
+		g.buttonSet.setBeat()
 	}
 
 	if halfBeat {
-		g.character.updateOnHalfBeat()
+		g.buttonSet.setHalfBeat()
 	}
 
-	if g.character.checkGoal() {
-		log.Print("The end")
+	clicked, buttonKind := g.buttonSet.update(g.cursor.x, g.cursor.y)
+
+	if clicked && buttonKind == buttonReset {
+		g.character.reset(levelSet[g.level])
+		g.state = stateSetupSequence
+	} else {
+
+		// Setup a sequence
+		if g.state == stateSetupSequence {
+			if clicked && buttonKind == buttonPlay {
+				g.state = statePlaySequence
+				g.buttonSet.setFirstLoop()
+			}
+		} else if g.state == statePlaySequence {
+
+			// Run a sequence
+			if newBeat {
+				playSound, soundID := g.character.updateOnBeat()
+				if playSound {
+					g.soundEngine.nextSounds[soundID] = true
+				}
+			}
+
+			if halfBeat {
+				g.character.updateOnHalfBeat()
+			}
+
+			if g.character.checkGoal() {
+				log.Print("The end")
+			}
+		}
+
 	}
 
 	g.soundEngine.playNow()

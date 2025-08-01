@@ -18,17 +18,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 type game struct {
+	state       int
 	soundEngine soundEngine
 	sequencer   sequencer
 	character   character
 	cursor      cursor
+	buttonSet   buttonSet
+	level       int
 }
+
+// Possible game states
+const (
+	stateSetupSequence int = iota
+	statePlaySequence
+)
 
 func newGame() (g game) {
 	loadImages()
 	initLevels()
 	g.soundEngine = newSoundEngine()
 	g.sequencer = newSequencer(110, 4)
-	g.character.reset(levelSet[0])
+	g.level = 0
+	g.character.reset(levelSet[g.level])
+	g.state = stateSetupSequence
+	g.buttonSet.setupButtons(len(g.character.moveSequence))
 	return
 }

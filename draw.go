@@ -29,6 +29,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 	g.character.draw(screen)
 
+	g.buttonSet.draw(
+		g.character.moveSequence,
+		(g.character.nextMovePosition+len(g.character.moveSequence)-1)%len(g.character.moveSequence),
+		g.state == statePlaySequence,
+		screen)
+
 	g.cursor.draw(screen)
 
 }
