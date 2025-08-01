@@ -65,7 +65,10 @@ func (g *game) Update() error {
 			}
 
 			if halfBeat {
-				g.character.updateOnHalfBeat()
+				playSound, soundID := g.character.updateOnHalfBeat()
+				if playSound {
+					g.soundEngine.nextSounds[soundID] = true
+				}
 			}
 
 			if g.character.checkGoal() {

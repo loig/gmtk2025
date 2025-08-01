@@ -48,6 +48,9 @@ var e3Bytes []byte
 //go:embed assets/ArpBG3.wav
 var g3Bytes []byte
 
+//go:embed assets/ArpBG4.wav
+var g4Bytes []byte
+
 //go:embed assets/RolandEBlip22.wav
 var blipBytes []byte
 
@@ -69,6 +72,7 @@ const (
 	soundC4
 	soundE3
 	soundG3
+	soundG4
 	soundBlip
 	numSounds
 )
@@ -139,6 +143,15 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 	engine.sounds[soundG3], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(g4Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundG4], err = io.ReadAll(sound)
 	if err != nil {
 		log.Panic("Audio problem: ", err)
 	}

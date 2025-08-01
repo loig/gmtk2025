@@ -159,8 +159,22 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 // On each half beat consumables are consumed
 // and their effects are applied. This produces
 // a sound on the half beat.
-func (c *character) updateOnHalfBeat() {
+func (c *character) updateOnHalfBeat() (playSound bool, soundID int) {
 
+	effect := c.levelArea[c.y][c.x]
+
+	switch effect {
+	case levelUp, levelLeft, levelDown, levelRight:
+		if c.applyMove(c.levelArea[c.y][c.x] - levelUp) {
+			playSound, soundID = true, soundG4
+		}
+	case levelUpBox, levelLeftBox, levelDownBox, levelRightBox, levelResetBox, levelNothingBox:
+		c.levelArea[c.y][c.x], c.moveSequence[c.currentMovePosition] =
+			c.moveSequence[c.currentMovePosition]+levelUpBox,
+			c.levelArea[c.y][c.x]-levelUpBox
+	}
+
+	return
 }
 
 func (c *character) setHalfBeat() {
