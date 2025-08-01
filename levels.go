@@ -25,6 +25,7 @@ import (
 )
 
 var levelSet []level
+var levelSteps [3]int
 
 // A level is an area (a matrix of things such
 // as floor, walls, etc), the number of moves
@@ -61,6 +62,41 @@ var testLevelBytes []byte
 
 //go:embed levels/test1
 var testLevel1Bytes []byte
+
+//go:embed levels/learn
+var learnLevelBytes []byte
+
+//go:embed levels/learnautomove
+var learnautomoveLevelBytes []byte
+
+//go:embed levels/learnblock
+var learnblockLevelBytes []byte
+
+//go:embed levels/learnreset
+var learnresetLevelBytes []byte
+
+// Set up the levels
+func initLevels() {
+
+	// First level
+	levelSet = append(levelSet, readLevel(learnLevelBytes))
+
+	// From there auto moves can be used
+	levelSteps[0] = len(levelSet)
+	levelSet = append(levelSet, readLevel(learnautomoveLevelBytes))
+
+	// From there replace blocks can be used
+	levelSteps[1] = len(levelSet)
+	levelSet = append(levelSet, readLevel(learnblockLevelBytes))
+
+	// From there reset can be used (must be after learning auto moves)
+	levelSteps[2] = len(levelSet)
+	levelSet = append(levelSet, readLevel(learnresetLevelBytes))
+
+	levelSet = append(levelSet, readLevel(testLevel1Bytes))
+	levelSet = append(levelSet, readLevel(testLevelBytes))
+
+}
 
 // Read a text file representing a level
 func readLevel(levelBytes []byte) (l level) {
@@ -156,14 +192,6 @@ func simplifyLevelArea(area [][]int) {
 			}
 		}
 	}
-}
-
-// Set up the levels
-func initLevels() {
-
-	levelSet = append(levelSet, readLevel(testLevel1Bytes))
-	levelSet = append(levelSet, readLevel(testLevelBytes))
-
 }
 
 // Draw an area on screen.

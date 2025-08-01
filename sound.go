@@ -54,6 +54,15 @@ var g4Bytes []byte
 //go:embed assets/RolandEBlip22.wav
 var blipBytes []byte
 
+//go:embed assets/RolandEBlip17.wav
+var blip2Bytes []byte
+
+//go:embed assets/RolandEBlip18.wav
+var blip3Bytes []byte
+
+//go:embed assets/RolandEBlip20.wav
+var blip4Bytes []byte
+
 // A sound engine is responsible for playing sounds
 // so that the same sound is not played twice at the same
 // frame.
@@ -74,6 +83,9 @@ const (
 	soundG3
 	soundG4
 	soundBlip
+	soundBlip2
+	soundBlip3
+	soundBlip4
 	numSounds
 )
 
@@ -161,6 +173,33 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 	engine.sounds[soundBlip], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(blip2Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundBlip2], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(blip3Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundBlip3], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(blip4Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundBlip4], err = io.ReadAll(sound)
 	if err != nil {
 		log.Panic("Audio problem: ", err)
 	}

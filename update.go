@@ -17,7 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
+import "math/rand/v2"
+
 func (g *game) Update() error {
+
+	defer g.soundEngine.playNow()
 
 	g.cursor.update()
 
@@ -26,18 +30,46 @@ func (g *game) Update() error {
 	if newBeat {
 		g.buttonSet.setBeat()
 		g.character.setBeat()
+		g.title.updateOnBeat()
+		if g.state == stateIntro {
+			if g.intro.updateOnBeat() {
+				g.soundEngine.nextSounds[rand.IntN(3)+soundBlip2] = true
+			}
+		}
 	}
 
 	if halfBeat {
 		g.buttonSet.setHalfBeat()
 		g.character.setHalfBeat()
+		g.title.updateOnBeat()
+		if g.state == stateIntro {
+			if g.intro.updateOnBeat() {
+				g.soundEngine.nextSounds[rand.IntN(3)+soundBlip2] = true
+			}
+		}
+	}
+
+	if g.state == stateTitle {
+		if g.title.update() {
+			g.level = 0
+			g.state = stateIntro
+		}
+		return nil
+	}
+
+	if g.state == stateIntro {
+		if g.intro.update() {
+			g.intro = setupIntro()
+			g.setLevel()
+		}
+		return nil
 	}
 
 	clicked, buttonKind, positionInSequence, smallPosition :=
 		g.buttonSet.update(g.cursor.x, g.cursor.y, g.state == stateSetupSequence)
 
 	if clicked && buttonKind == buttonReset {
-		g.character.reset(levelSet[g.level], false)
+		g.character.reset(levelSet[g.level], g.state == stateSetupSequence)
 		g.state = stateSetupSequence
 	} else {
 
@@ -51,8 +83,15 @@ func (g *game) Update() error {
 					getMoveFromChoice(smallPosition, g.character.moveSequence[positionInSequence], true)
 			}
 		} else if g.state == statePlaySequence {
-
 			// Run a sequence
+
+			if newBeat && g.character.checkGoal() {
+				g.level++
+				g.evolutionSubStep++
+				g.setLevel()
+				return nil
+			}
+
 			if newBeat {
 				playSound, soundID := g.character.updateOnBeat()
 				if playSound {
@@ -67,15 +106,9 @@ func (g *game) Update() error {
 				}
 			}
 
-			if g.character.checkGoal() {
-				g.level++
-				g.setLevel()
-			}
 		}
 
 	}
-
-	g.soundEngine.playNow()
 
 	return nil
 }

@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -27,14 +28,32 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 	screen.Fill(color.RGBA{R: 0xca, G: 0xa0, B: 0x5a, A: 255})
 
-	g.character.draw(screen)
+	if g.state == stateTitle {
+		g.title.draw(screen)
+	} else if g.state == stateIntro {
+		g.intro.draw(screen)
+	} else {
+		g.character.draw(screen)
 
-	g.buttonSet.draw(
-		g.character.moveSequence,
-		g.character.currentMovePosition,
-		g.state == statePlaySequence,
-		screen)
+		g.buttonSet.draw(
+			g.character.moveSequence,
+			g.character.currentMovePosition,
+			g.state == statePlaySequence,
+			screen)
+
+		g.drawLevelInfo(screen)
+	}
 
 	g.cursor.draw(screen)
+
+}
+
+func (g game) drawLevelInfo(screen *ebiten.Image) {
+
+	text := fmt.Sprintf("Cybernetic Unit Benchmark ver. 0.%d", g.evolutionStep)
+	if g.evolutionSubStep > 0 {
+		text = fmt.Sprintf("%s.%d", text, g.evolutionSubStep)
+	}
+	drawTextAt(text, 20, 10, screen)
 
 }

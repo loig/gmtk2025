@@ -17,33 +17,57 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
+import "log"
+
 type game struct {
-	state       int
-	soundEngine soundEngine
-	sequencer   sequencer
-	character   character
-	cursor      cursor
-	buttonSet   buttonSet
-	level       int
+	state            int
+	soundEngine      soundEngine
+	sequencer        sequencer
+	character        character
+	cursor           cursor
+	buttonSet        buttonSet
+	level            int
+	title            title
+	intro            intro
+	evolutionStep    int
+	evolutionSubStep int
 }
 
 // Possible game states
 const (
 	stateSetupSequence int = iota
 	statePlaySequence
+	stateTitle
+	stateIntro
 )
 
 func newGame() (g game) {
+	loadFonts()
 	loadImages()
 	initLevels()
 	g.soundEngine = newSoundEngine()
 	g.sequencer = newSequencer(110, 4)
-	g.level = 0
-	g.setLevel()
+	g.reset()
+	log.Print(g.state)
 	return
 }
 
+func (g *game) reset() {
+	g.intro = setupIntro()
+	g.level = 0
+	g.setLevel()
+	g.evolutionStep = 1
+	g.evolutionSubStep = 0
+	g.state = stateTitle
+}
+
 func (g *game) setLevel() {
+	if g.evolutionStep < len(levelSteps) {
+		if g.level >= levelSteps[g.evolutionStep] {
+			g.evolutionStep++
+			g.evolutionSubStep = 0
+		}
+	}
 	g.character.reset(levelSet[g.level], true)
 	g.state = stateSetupSequence
 	g.buttonSet.setupButtons(len(g.character.moveSequence))
