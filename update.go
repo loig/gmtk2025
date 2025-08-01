@@ -29,10 +29,12 @@ func (g *game) Update() error {
 
 	if newBeat {
 		g.buttonSet.setBeat()
+		g.character.setBeat()
 	}
 
 	if halfBeat {
 		g.buttonSet.setHalfBeat()
+		g.character.setHalfBeat()
 	}
 
 	clicked, buttonKind, positionInSequence := g.buttonSet.update(g.cursor.x, g.cursor.y)

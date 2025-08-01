@@ -75,7 +75,6 @@ func (c *character) reset(level level) {
 // step is not "do nothing" then a sound is
 // played on the beat.
 func (c *character) updateOnBeat() (playSound bool, soundID int) {
-	c.onBeat = true
 	if c.applyMove(c.moveSequence[c.nextMovePosition]) {
 		playSound, soundID = getMoveSoundId(c.moveSequence[c.nextMovePosition])
 	} else {
@@ -84,6 +83,10 @@ func (c *character) updateOnBeat() (playSound bool, soundID int) {
 	}
 	c.nextMovePosition = (c.nextMovePosition + 1) % len(c.moveSequence)
 	return
+}
+
+func (c *character) setBeat() {
+	c.onBeat = true
 }
 
 // Get the effect of a given move on the character
@@ -147,6 +150,10 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 // and their effects are applied. This produces
 // a sound on the half beat.
 func (c *character) updateOnHalfBeat() {
+
+}
+
+func (c *character) setHalfBeat() {
 	c.onBeat = false
 }
 
@@ -161,14 +168,18 @@ func (c character) draw(screen *ebiten.Image) {
 
 	drawLevelArea(c.levelArea, c.displayX, c.displayY, screen)
 
-	drawGoal(c.levelGoalX, c.levelGoalY, c.displayX, c.displayY, screen)
+	drawGoal(c.levelGoalX, c.levelGoalY, c.displayX, c.displayY, c.onBeat, screen)
 
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(
 		c.displayX+float64(c.x*globalTileSize)-globalTileMargin,
 		c.displayY+float64(c.y*globalTileSize)-globalTileMargin)
 
-	subImageX := (globalTileSize + 2*globalTileMargin) * (levelEmpty + 2)
+	increment := 2
+	if !c.onBeat {
+		increment++
+	}
+	subImageX := (globalTileSize + 2*globalTileMargin) * (levelEmpty + increment)
 
 	screen.DrawImage(tilesImage.SubImage(
 		image.Rect(subImageX, 0,

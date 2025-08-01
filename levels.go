@@ -237,14 +237,18 @@ func drawLevelArea(area [][]int, startX, startY float64, screen *ebiten.Image) {
 }
 
 // Draw a goal on screen.
-func drawGoal(x, y int, startX, startY float64, screen *ebiten.Image) {
+func drawGoal(x, y int, startX, startY float64, onBeat bool, screen *ebiten.Image) {
 
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(
 		startX+float64(x*globalTileSize)-globalTileMargin,
 		startY+float64(y*globalTileSize)-globalTileMargin)
 
-	subImageX := (globalTileSize + 2*globalTileMargin) * (levelEmpty + 3)
+	increment := 4
+	if !onBeat {
+		increment++
+	}
+	subImageX := (globalTileSize + 2*globalTileMargin) * (levelEmpty + increment)
 
 	screen.DrawImage(tilesImage.SubImage(
 		image.Rect(subImageX, 0,
