@@ -36,6 +36,11 @@ func (g *game) Update() error {
 				g.soundEngine.nextSounds[rand.IntN(3)+soundBlip2] = true
 			}
 		}
+		if g.state == stateEnd {
+			if g.end.updateOnBeat() {
+				g.soundEngine.nextSounds[rand.IntN(3)+soundBlip2] = true
+			}
+		}
 	}
 
 	if halfBeat {
@@ -44,6 +49,11 @@ func (g *game) Update() error {
 		g.title.updateOnBeat()
 		if g.state == stateIntro {
 			if g.intro.updateOnBeat() {
+				g.soundEngine.nextSounds[rand.IntN(3)+soundBlip2] = true
+			}
+		}
+		if g.state == stateEnd {
+			if g.end.updateOnBeat() {
 				g.soundEngine.nextSounds[rand.IntN(3)+soundBlip2] = true
 			}
 		}
@@ -60,8 +70,15 @@ func (g *game) Update() error {
 
 	if g.state == stateIntro {
 		if g.intro.update() {
-			g.intro = setupIntro()
 			g.setLevel()
+			g.soundEngine.nextSounds[soundGo] = true
+		}
+		return nil
+	}
+
+	if g.state == stateEnd {
+		if g.end.update() {
+			g.reset()
 			g.soundEngine.nextSounds[soundGo] = true
 		}
 		return nil

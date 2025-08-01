@@ -96,7 +96,6 @@ func initLevels() {
 	levelStepReset = len(levelSet)
 
 	levelSet = append(levelSet, readLevel(testLevel1Bytes))
-	levelSet = append(levelSet, readLevel(testLevelBytes))
 
 }
 

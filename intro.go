@@ -52,6 +52,29 @@ func setupIntro() (i intro) {
 	return
 }
 
+func setupEnd() (i intro) {
+	i.beat = 0
+	i.step = 0
+	i.text = []string{
+		"July 22, 2010.",
+		"11:41 pm.",
+		"",
+		"Cybernetic Unit Benchmark completed.",
+		"",
+		"Objective 1: Achieved.",
+		"Objective 2: Inconclusive.",
+		"",
+		"Closing session...",
+		"...",
+		"....",
+		"..",
+		"Done.",
+		"",
+		"Click for new session.",
+	}
+	return
+}
+
 func (l *intro) update() (done bool) {
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		l.step++

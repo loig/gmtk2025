@@ -29,6 +29,7 @@ type game struct {
 	level            int
 	title            title
 	intro            intro
+	end              intro
 	evolutionStep    int
 	evolutionSubStep int
 }
@@ -39,6 +40,7 @@ const (
 	statePlaySequence
 	stateTitle
 	stateIntro
+	stateEnd
 )
 
 func newGame() (g game) {
@@ -54,6 +56,7 @@ func newGame() (g game) {
 
 func (g *game) reset() {
 	g.intro = setupIntro()
+	g.end = setupEnd()
 	g.level = 0
 	g.evolutionStep = 1
 	g.evolutionSubStep = 0
@@ -67,6 +70,10 @@ func (g *game) setLevel() {
 			g.evolutionStep++
 			g.evolutionSubStep = 0
 		}
+	}
+	if g.level >= len(levelSet) {
+		g.state = stateEnd
+		return
 	}
 	g.character.reset(levelSet[g.level], true)
 	g.state = stateSetupSequence

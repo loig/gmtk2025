@@ -32,6 +32,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.title.draw(screen)
 	} else if g.state == stateIntro {
 		g.intro.draw(screen)
+	} else if g.state == stateEnd {
+		g.end.draw(screen)
 	} else {
 		g.character.draw(screen)
 
