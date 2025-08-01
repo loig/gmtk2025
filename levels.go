@@ -41,6 +41,17 @@ type level struct {
 const (
 	levelFloor int = iota
 	levelCeiling
+	levelUpBox
+	levelRightBox
+	levelDownBox
+	levelLeftBox
+	levelResetBox
+	levelNothingBox
+	levelUp
+	levelRight
+	levelDown
+	levelLeft
+	levelReset
 	levelWall
 	levelEmpty
 )
@@ -75,6 +86,42 @@ func readLevel(levelBytes []byte) (l level) {
 			x = 0
 		case '1', '2', '3', '4', '5', '6', '7', '8':
 			l.sequenceLen = int(b) - 48
+		case 'u':
+			l.area[y] = append(l.area[y], levelUp)
+			x++
+		case 'U':
+			l.area[y] = append(l.area[y], levelUpBox)
+			x++
+		case 'd':
+			l.area[y] = append(l.area[y], levelDown)
+			x++
+		case 'D':
+			l.area[y] = append(l.area[y], levelDownBox)
+			x++
+		case 'l':
+			l.area[y] = append(l.area[y], levelLeft)
+			x++
+		case 'L':
+			l.area[y] = append(l.area[y], levelLeftBox)
+			x++
+		case 'r':
+			l.area[y] = append(l.area[y], levelRight)
+			x++
+		case 'R':
+			l.area[y] = append(l.area[y], levelRightBox)
+			x++
+		case 'b':
+			l.area[y] = append(l.area[y], levelReset)
+			x++
+		case 'B':
+			l.area[y] = append(l.area[y], levelResetBox)
+			x++
+		case 'n':
+			l.area[y] = append(l.area[y], levelNothingBox)
+			x++
+		default:
+			l.area[y] = append(l.area[y], levelEmpty)
+			x++
 		}
 	}
 
@@ -121,7 +168,9 @@ func drawLevelArea(area [][]int, startX, startY float64, screen *ebiten.Image) {
 	// draw floor
 	for y := range area {
 		for x := range area[y] {
-			if area[y][x] == levelFloor {
+			if area[y][x] != levelWall &&
+				area[y][x] != levelCeiling &&
+				area[y][x] != levelEmpty {
 
 				options := &ebiten.DrawImageOptions{}
 				options.GeoM.Translate(

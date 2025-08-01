@@ -100,7 +100,7 @@ func (bSet *buttonSet) setFirstLoop() {
 }
 
 // Update the buttons
-func (bSet *buttonSet) update(cursorX, cursorY int) (click bool, clickKind int) {
+func (bSet *buttonSet) update(cursorX, cursorY int) (click bool, clickKind int, positionInSequence int) {
 
 	hoveredPos := -1
 
@@ -113,7 +113,7 @@ func (bSet *buttonSet) update(cursorX, cursorY int) (click bool, clickKind int) 
 	}
 
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && hoveredPos != -1 {
-		return true, bSet.content[hoveredPos].kind
+		return true, bSet.content[hoveredPos].kind, bSet.content[hoveredPos].positionInSequence
 	}
 
 	return
@@ -130,19 +130,26 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 		directionNum := nothing
 		switch button.kind {
 		case buttonPlay:
-			imageNum = 15
+			imageNum = 11
+			if button.hover {
+				imageNum += 2
+			}
 		case buttonReset:
-			imageNum = 16
-		case buttonSequence:
 			imageNum = 12
+			if button.hover {
+				imageNum += 2
+			}
+		case buttonSequence:
+			imageNum = 8
 			directionNum = sequence[button.positionInSequence]
-			if !button.hover && buttonSet.onBeat && !inPlay {
-				imageNum = 13
-				directionNum += 4
+			if (!button.hover && buttonSet.onBeat && !inPlay && directionNum == nothing) ||
+				(button.hover && !inPlay) ||
+				(button.hover && inPlay && (currentPosition != button.positionInSequence || !buttonSet.onBeat)) {
+				imageNum = 9
 			} else if currentPosition == button.positionInSequence &&
 				buttonSet.onBeat && inPlay && !buttonSet.firstLoop {
-				imageNum = 14
-				directionNum += 8
+				imageNum = 10
+				directionNum += nothing
 			}
 		}
 
@@ -151,6 +158,15 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 				(imageNum+1)*globalButtonWidth,
 				globalButtonHeight)).(*ebiten.Image),
 			options)
+
+		if button.kind == buttonSequence &&
+			sequence[button.positionInSequence] != nothing {
+			screen.DrawImage(buttonsImage.SubImage(
+				image.Rect(directionNum*globalButtonWidth, 0,
+					(directionNum+1)*globalButtonWidth,
+					globalButtonHeight)).(*ebiten.Image),
+				options)
+		}
 	}
 
 	/*

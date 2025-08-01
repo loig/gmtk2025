@@ -35,7 +35,10 @@ func (g *game) Update() error {
 		g.buttonSet.setHalfBeat()
 	}
 
-	clicked, buttonKind := g.buttonSet.update(g.cursor.x, g.cursor.y)
+	clicked, buttonKind, positionInSequence := g.buttonSet.update(g.cursor.x, g.cursor.y)
+	if clicked {
+		log.Print(positionInSequence)
+	}
 
 	if clicked && buttonKind == buttonReset {
 		g.character.reset(levelSet[g.level])
