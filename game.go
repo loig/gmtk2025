@@ -55,15 +55,15 @@ func newGame() (g game) {
 func (g *game) reset() {
 	g.intro = setupIntro()
 	g.level = 0
-	g.setLevel()
 	g.evolutionStep = 1
 	g.evolutionSubStep = 0
+	g.setLevel()
 	g.state = stateTitle
 }
 
 func (g *game) setLevel() {
-	if g.evolutionStep < len(levelSteps) {
-		if g.level >= levelSteps[g.evolutionStep] {
+	if g.evolutionStep-1 < len(levelSteps) {
+		if g.level >= levelSteps[g.evolutionStep-1] {
 			g.evolutionStep++
 			g.evolutionSubStep = 0
 		}

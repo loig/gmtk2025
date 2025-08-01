@@ -142,7 +142,7 @@ func (bSet *buttonSet) setFirstLoop() {
 }
 
 // Update the buttons
-func (bSet *buttonSet) update(cursorX, cursorY int, inSetUp bool) (click bool, clickKind int, positionInSequence int, smallPosition int) {
+func (bSet *buttonSet) update(cursorX, cursorY int, inSetUp bool, withReset bool) (click bool, clickKind int, positionInSequence int, smallPosition int) {
 
 	hoveredPos := -1
 
@@ -172,7 +172,7 @@ func (bSet *buttonSet) update(cursorX, cursorY int, inSetUp bool) (click bool, c
 					}
 					bSet.activePosition = hoveredPos
 					bSet.hasActive = true
-					bSet.addButtons(true)
+					bSet.addButtons(withReset)
 				}
 			} else if bSet.content[hoveredPos].kind == buttonSelectMove {
 				bSet.hasActive = false

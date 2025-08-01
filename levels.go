@@ -26,6 +26,7 @@ import (
 
 var levelSet []level
 var levelSteps [3]int
+var levelStepReset int
 
 // A level is an area (a matrix of things such
 // as floor, walls, etc), the number of moves
@@ -92,6 +93,7 @@ func initLevels() {
 	// From there reset can be used (must be after learning auto moves)
 	levelSteps[2] = len(levelSet)
 	levelSet = append(levelSet, readLevel(learnresetLevelBytes))
+	levelStepReset = len(levelSet)
 
 	levelSet = append(levelSet, readLevel(testLevel1Bytes))
 	levelSet = append(levelSet, readLevel(testLevelBytes))

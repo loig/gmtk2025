@@ -53,6 +53,7 @@ func (g *game) Update() error {
 		if g.title.update() {
 			g.level = 0
 			g.state = stateIntro
+			g.soundEngine.nextSounds[soundGo] = true
 		}
 		return nil
 	}
@@ -61,26 +62,29 @@ func (g *game) Update() error {
 		if g.intro.update() {
 			g.intro = setupIntro()
 			g.setLevel()
+			g.soundEngine.nextSounds[soundGo] = true
 		}
 		return nil
 	}
 
 	clicked, buttonKind, positionInSequence, smallPosition :=
-		g.buttonSet.update(g.cursor.x, g.cursor.y, g.state == stateSetupSequence)
+		g.buttonSet.update(g.cursor.x, g.cursor.y, g.state == stateSetupSequence, g.level >= levelStepReset)
 
 	if clicked && buttonKind == buttonReset {
 		g.character.reset(levelSet[g.level], g.state == stateSetupSequence)
 		g.state = stateSetupSequence
+		g.soundEngine.nextSounds[soundBack] = true
 	} else {
 
 		// Setup a sequence
 		if g.state == stateSetupSequence {
 			if clicked && buttonKind == buttonPlay {
+				g.soundEngine.nextSounds[soundGo] = true
 				g.state = statePlaySequence
 				g.buttonSet.setFirstLoop()
 			} else if clicked && buttonKind == buttonSelectMove {
 				g.character.moveSequence[positionInSequence] =
-					getMoveFromChoice(smallPosition, g.character.moveSequence[positionInSequence], true)
+					getMoveFromChoice(smallPosition, g.character.moveSequence[positionInSequence], g.level >= levelStepReset)
 			}
 		} else if g.state == statePlaySequence {
 			// Run a sequence
@@ -88,6 +92,7 @@ func (g *game) Update() error {
 			if newBeat && g.character.checkGoal() {
 				g.level++
 				g.evolutionSubStep++
+				g.soundEngine.nextSounds[soundSuccess] = true
 				g.setLevel()
 				return nil
 			}
