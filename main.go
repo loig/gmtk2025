@@ -25,6 +25,8 @@ import (
 
 func main() {
 
+	log.Print(readLevel(testLevelBytes))
+
 	g := newGame()
 
 	ebiten.SetWindowTitle("CUB 2: Origins")

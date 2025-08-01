@@ -53,6 +53,9 @@ func (c *character) reset(level level) {
 	c.x = level.startX
 	c.y = level.startY
 	c.moveSequence = make([]int, level.sequenceLen)
+	for pos := 0; pos < len(c.moveSequence); pos++ {
+		c.moveSequence[pos] = nothing
+	}
 	c.nextMovePosition = 0
 	c.levelArea = make([][]int, len(level.area))
 	for linePos, line := range level.area {
@@ -61,7 +64,7 @@ func (c *character) reset(level level) {
 	}
 	c.levelGoalX = level.goalX
 	c.levelGoalY = level.goalY
-	c.displayY = float64(globalScreenHeight-len(level.area)*globalTileSize) / 2
+	c.displayY = float64(globalScreenHeight-globalButtonHeight-len(level.area)*globalTileSize) / 2
 	if len(level.area) > 0 {
 		c.displayX = float64(globalScreenWidth-len(level.area[0])*globalTileSize) / 2
 	}

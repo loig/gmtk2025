@@ -27,6 +27,7 @@ func (c *cursor) update() {
 	c.x, c.y = ebiten.CursorPosition()
 }
 
+// Display a custom image for the mouse cursor
 func (c cursor) draw(screen *ebiten.Image) {
 	options := &ebiten.DrawImageOptions{}
 	options.GeoM.Translate(float64(c.x), float64(c.y))

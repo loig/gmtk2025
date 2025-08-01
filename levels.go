@@ -18,10 +18,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
+	_ "embed"
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
+
+var levelSet []level
 
 // A level is an area (a matrix of things such
 // as floor, walls, etc), the number of moves
@@ -42,21 +45,74 @@ const (
 	levelEmpty
 )
 
-// A level for testing purpose (will not be used in the final game).
-var testLevel level = level{
-	area: [][]int{
-		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelCeiling, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-	},
-	sequenceLen: 8,
-	startX:      0, startY: 0,
-	goalX: 3, goalY: 3,
+//go:embed levels/test
+var testLevelBytes []byte
+
+// Read a text file representing a level
+func readLevel(levelBytes []byte) (l level) {
+	x, y := 0, -1
+	for _, b := range levelBytes {
+		switch b {
+		case '.':
+			l.area[y] = append(l.area[y], levelFloor)
+			x++
+		case 's':
+			l.area[y] = append(l.area[y], levelFloor)
+			l.startX = x
+			l.startY = y
+			x++
+		case 'g':
+			l.area[y] = append(l.area[y], levelFloor)
+			l.goalX = x
+			l.goalY = y
+			x++
+		case '#':
+			l.area[y] = append(l.area[y], levelWall)
+			x++
+		case '\n':
+			l.area = append(l.area, make([]int, 0))
+			y++
+			x = 0
+		case '1', '2', '3', '4', '5', '6', '7', '8':
+			l.sequenceLen = int(b) - 48
+		}
+	}
+
+	simplifyLevelArea(l.area)
+
+	return l
+}
+
+// Set up a level for better display
+func simplifyLevelArea(area [][]int) {
+
+	// Remove floor around outer walls
+	for y := 0; y < len(area); y++ {
+		reached := 0
+		for x := 0; x < len(area[y]) && area[y][x] != levelWall; x++ {
+			area[y][x] = levelEmpty
+			reached = x
+		}
+		for x := len(area[y]) - 1; x > reached && area[y][x] != levelWall; x-- {
+			area[y][x] = levelEmpty
+		}
+	}
+
+	// Put ceiling when needed
+	for y := 0; y < len(area)-1; y++ {
+		for x := 0; x < len(area[y]); x++ {
+			if area[y][x] == levelWall && area[y+1][x] == levelWall {
+				area[y][x] = levelCeiling
+			}
+		}
+	}
+}
+
+// Set up the levels
+func initLevels() {
+
+	levelSet = append(levelSet, readLevel(testLevelBytes))
+
 }
 
 // Draw an area on screen.
