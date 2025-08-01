@@ -18,10 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
-	"image/color"
+	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 // A level is an area (a matrix of things such
@@ -30,7 +29,7 @@ import (
 // position and a goal position.
 type level struct {
 	area           [][]int
-	sequenceLen    int
+	sequenceLen    int // The sequence length should never be over 8
 	startX, startY int
 	goalX, goalY   int
 }
@@ -38,7 +37,9 @@ type level struct {
 // The type of things that can be found in a level.
 const (
 	levelFloor int = iota
+	levelCeiling
 	levelWall
+	levelEmpty
 )
 
 // A level for testing purpose (will not be used in the final game).
@@ -49,9 +50,9 @@ var testLevel level = level{
 		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
 		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
 		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelCeiling, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
 		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
-		{levelFloor, levelWall, levelWall, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
+		{levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor, levelFloor},
 	},
 	sequenceLen: 8,
 	startX:      0, startY: 0,
@@ -59,20 +60,71 @@ var testLevel level = level{
 }
 
 // Draw an area on screen.
-func drawLevelArea(area [][]int, screen *ebiten.Image) {
+func drawLevelArea(area [][]int, startX, startY float64, screen *ebiten.Image) {
 
+	// draw floor
 	for y := range area {
 		for x := range area[y] {
-			odd := (x+y)%2 == 0
-			floorColor := color.RGBA{G: 255, A: 255}
-			if odd {
-				floorColor = color.RGBA{G: 120, A: 255}
+			if area[y][x] == levelFloor {
+
+				options := &ebiten.DrawImageOptions{}
+				options.GeoM.Translate(
+					startX+float64(x*globalTileSize)-globalTileMargin,
+					startY+float64(y*globalTileSize)-globalTileMargin)
+
+				subImageX := 0
+
+				if (x+y)%2 == 0 {
+					subImageX = (globalTileSize + 2*globalTileMargin)
+				}
+
+				screen.DrawImage(tilesImage.SubImage(
+					image.Rect(subImageX, 0,
+						subImageX+(globalTileSize+2*globalTileMargin),
+						globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+					options)
 			}
-			switch area[y][x] {
-			case levelFloor:
-				vector.DrawFilledRect(screen, float32(x*globalTileSize), float32(y*globalTileSize), globalTileSize, globalTileSize, floorColor, false)
-			case levelWall:
-				vector.DrawFilledRect(screen, float32(x*globalTileSize), float32(y*globalTileSize), globalTileSize, globalTileSize, color.Black, false)
+		}
+	}
+
+	// draw walls
+	for y := range area {
+		for x := range area[y] {
+			if area[y][x] == levelWall {
+
+				options := &ebiten.DrawImageOptions{}
+				options.GeoM.Translate(
+					startX+float64(x*globalTileSize)-globalTileMargin,
+					startY+float64(y*globalTileSize)-globalTileMargin)
+
+				subImageX := (globalTileSize + 2*globalTileMargin) * (levelWall + 2)
+
+				screen.DrawImage(tilesImage.SubImage(
+					image.Rect(subImageX, 0,
+						subImageX+(globalTileSize+2*globalTileMargin),
+						globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+					options)
+			}
+		}
+	}
+
+	// draw other things
+	for y := range area {
+		for x := range area[y] {
+			if area[y][x] != levelFloor && area[y][x] != levelEmpty {
+
+				options := &ebiten.DrawImageOptions{}
+				options.GeoM.Translate(
+					startX+float64(x*globalTileSize)-globalTileMargin,
+					startY+float64(y*globalTileSize)-globalTileMargin)
+
+				subImageX := (globalTileSize + 2*globalTileMargin) * (area[y][x] + 1)
+
+				screen.DrawImage(tilesImage.SubImage(
+					image.Rect(subImageX, 0,
+						subImageX+(globalTileSize+2*globalTileMargin),
+						globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+					options)
 			}
 		}
 	}
@@ -80,8 +132,19 @@ func drawLevelArea(area [][]int, screen *ebiten.Image) {
 }
 
 // Draw a goal on screen.
-func drawGoal(x, y int, screen *ebiten.Image) {
+func drawGoal(x, y int, startX, startY float64, screen *ebiten.Image) {
 
-	vector.DrawFilledRect(screen, float32(x*globalTileSize), float32(y*globalTileSize), globalTileSize, globalTileSize, color.RGBA{R: 255, A: 255}, false)
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Translate(
+		startX+float64(x*globalTileSize)-globalTileMargin,
+		startY+float64(y*globalTileSize)-globalTileMargin)
+
+	subImageX := (globalTileSize + 2*globalTileMargin) * (levelEmpty + 3)
+
+	screen.DrawImage(tilesImage.SubImage(
+		image.Rect(subImageX, 0,
+			subImageX+(globalTileSize+2*globalTileMargin),
+			globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+		options)
 
 }

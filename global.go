@@ -18,5 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 const (
-	globalTileSize = 20
+	globalTileSize     = 40
+	globalTileMargin   = 10
+	globalScreenWidth  = 800
+	globalScreenHeight = 600
+	globalButtonWidth  = 80
+	globalButtonHeight = 120
 )

@@ -18,10 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
-	"image/color"
+	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 // The character position, sequence of moves (that will
@@ -33,6 +32,8 @@ type character struct {
 	nextMovePosition       int
 	levelArea              [][]int
 	levelGoalX, levelGoalY int
+	displayX, displayY     float64
+	onBeat                 bool
 }
 
 // The possible moves of the character.
@@ -60,6 +61,10 @@ func (c *character) reset(level level) {
 	}
 	c.levelGoalX = level.goalX
 	c.levelGoalY = level.goalY
+	c.displayY = float64(globalScreenHeight-len(level.area)*globalTileSize) / 2
+	if len(level.area) > 0 {
+		c.displayX = float64(globalScreenWidth-len(level.area[0])*globalTileSize) / 2
+	}
 }
 
 // The character performs one step of its
@@ -67,6 +72,7 @@ func (c *character) reset(level level) {
 // step is not "do nothing" then a sound is
 // played on the beat.
 func (c *character) updateOnBeat() (playSound bool, soundID int) {
+	c.onBeat = true
 	if c.applyMove(c.moveSequence[c.nextMovePosition]) {
 		playSound, soundID = getMoveSoundId(c.moveSequence[c.nextMovePosition])
 	} else {
@@ -110,7 +116,8 @@ func (c *character) applyMove(move int) (success bool) {
 func (c character) isAccessible(x, y int) bool {
 	return x >= 0 && y >= 0 &&
 		y < len(c.levelArea) && x < len(c.levelArea[y]) &&
-		c.levelArea[y][x] != levelWall
+		c.levelArea[y][x] != levelWall &&
+		c.levelArea[y][x] != levelCeiling
 }
 
 // Given a move, get the corresponding sound ID.
@@ -137,7 +144,7 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 // and their effects are applied. This produces
 // a sound on the half beat.
 func (c *character) updateOnHalfBeat() {
-
+	c.onBeat = false
 }
 
 // If the character has reached the goal position
@@ -149,10 +156,26 @@ func (c character) checkGoal() bool {
 // Draw the character and the area on screen.
 func (c character) draw(screen *ebiten.Image) {
 
-	drawLevelArea(c.levelArea, screen)
+	drawLevelArea(c.levelArea, c.displayX, c.displayY, screen)
 
-	drawGoal(c.levelGoalX, c.levelGoalY, screen)
+	drawGoal(c.levelGoalX, c.levelGoalY, c.displayX, c.displayY, screen)
 
-	vector.DrawFilledRect(screen, float32(c.x*globalTileSize+5), float32(c.y*globalTileSize+5), globalTileSize-10, globalTileSize-10, color.White, false)
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Translate(
+		c.displayX+float64(c.x*globalTileSize)-globalTileMargin,
+		c.displayY+float64(c.y*globalTileSize)-globalTileMargin)
 
+	subImageX := (globalTileSize + 2*globalTileMargin) * (levelEmpty + 2)
+
+	screen.DrawImage(tilesImage.SubImage(
+		image.Rect(subImageX, 0,
+			subImageX+(globalTileSize+2*globalTileMargin),
+			globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+		options)
+
+	drawButtons(
+		c.moveSequence,
+		(c.nextMovePosition+len(c.moveSequence)-1)%len(c.moveSequence),
+		c.onBeat,
+		screen)
 }

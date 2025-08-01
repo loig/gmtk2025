@@ -17,18 +17,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
-import (
-	"image/color"
+import "github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/hajimehoshi/ebiten/v2"
-)
+type cursor struct {
+	x, y int
+}
 
-func (g *game) Draw(screen *ebiten.Image) {
+func (c *cursor) update() {
+	c.x, c.y = ebiten.CursorPosition()
+}
 
-	screen.Fill(color.RGBA{R: 0xca, G: 0xa0, B: 0x5a, A: 255})
-
-	g.character.draw(screen)
-
-	g.cursor.draw(screen)
-
+func (c cursor) draw(screen *ebiten.Image) {
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Translate(float64(c.x), float64(c.y))
+	screen.DrawImage(cursorImage, options)
 }

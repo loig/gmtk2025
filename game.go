@@ -21,9 +21,11 @@ type game struct {
 	soundEngine soundEngine
 	sequencer   sequencer
 	character   character
+	cursor      cursor
 }
 
 func newGame() (g game) {
+	loadImages()
 	g.soundEngine = newSoundEngine()
 	g.sequencer = newSequencer(110, 4)
 	g.character.reset(testLevel)

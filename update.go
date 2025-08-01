@@ -21,6 +21,8 @@ import "log"
 
 func (g *game) Update() error {
 
+	g.cursor.update()
+
 	newBeat, halfBeat := g.sequencer.update(&g.soundEngine)
 
 	if newBeat {

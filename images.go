@@ -18,21 +18,44 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
+	"bytes"
+	_ "embed"
+	"image"
+	_ "image/png"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func main() {
+//go:embed assets/tiles.png
+var tilesBytes []byte
+var tilesImage *ebiten.Image
 
-	g := newGame()
+//go:embed assets/buttons.png
+var buttonsBytes []byte
+var buttonsImage *ebiten.Image
 
-	ebiten.SetWindowTitle("CUB 2: Origins")
-	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetCursorMode(ebiten.CursorModeHidden)
+//go:embed assets/cursor.png
+var cursorBytes []byte
+var cursorImage *ebiten.Image
 
-	if err := ebiten.RunGame(&g); err != nil {
+// load all images
+func loadImages() {
+	decoded, _, err := image.Decode(bytes.NewReader(tilesBytes))
+	if err != nil {
 		log.Fatal(err)
 	}
+	tilesImage = ebiten.NewImageFromImage(decoded)
 
+	decoded, _, err = image.Decode(bytes.NewReader(buttonsBytes))
+	if err != nil {
+		log.Fatal(err)
+	}
+	buttonsImage = ebiten.NewImageFromImage(decoded)
+
+	decoded, _, err = image.Decode(bytes.NewReader(cursorBytes))
+	if err != nil {
+		log.Fatal(err)
+	}
+	cursorImage = ebiten.NewImageFromImage(decoded)
 }
