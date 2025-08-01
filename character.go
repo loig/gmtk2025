@@ -42,6 +42,7 @@ const (
 	moveRight
 	moveDown
 	moveLeft
+	moveReset
 	nothing
 )
 

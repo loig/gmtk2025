@@ -26,9 +26,11 @@ import (
 
 // The set of buttons, can change at each level
 type buttonSet struct {
-	content   []button
-	onBeat    bool
-	firstLoop bool
+	content        []button
+	onBeat         bool
+	firstLoop      bool
+	activePosition int
+	hasActive      bool
 }
 
 // A button has a position and a size
@@ -38,6 +40,8 @@ type button struct {
 	hover               bool
 	kind                int
 	positionInSequence  int
+	smallPosition       int
+	smallReset          bool
 }
 
 // Kinds of buttons
@@ -45,11 +49,48 @@ const (
 	buttonPlay int = iota
 	buttonReset
 	buttonSequence
+	buttonSelectMove
 )
+
+// Add small move buttons to a set
+func (bSet *buttonSet) addButtons(withReset bool) {
+
+	numButtons := 4
+	if withReset {
+		numButtons++
+	}
+
+	x := bSet.content[bSet.activePosition].x + (globalButtonWidth-numButtons*globalTileSize)/2
+	y := bSet.content[bSet.activePosition].y - globalTileSize + globalTileMargin
+	position := bSet.content[bSet.activePosition].positionInSequence
+
+	for num := 0; num < numButtons; num++ {
+		bSet.content = append(bSet.content, button{
+			drawX: float64(x), drawY: float64(y),
+			x: x, y: y,
+			width: globalTileSize, height: globalTileSize,
+			kind:               buttonSelectMove,
+			positionInSequence: position,
+			smallPosition:      num,
+			smallReset:         withReset,
+		})
+		x += globalTileSize
+	}
+
+}
+
+// Remove small move buttons from a set
+func (bSet *buttonSet) removeButtons() {
+
+	for bSet.content[len(bSet.content)-1].kind == buttonSelectMove {
+		bSet.content = bSet.content[:len(bSet.content)-1]
+	}
+
+}
 
 // Initialize the button set for a given level
 func (bSet *buttonSet) setupButtons(sequenceLen int) {
-	buttonSet := make([]button, sequenceLen+2)
+	buttonSet := make([]button, sequenceLen+2, sequenceLen+7)
 
 	// Play button
 	buttonSet[0] = button{
@@ -83,6 +124,7 @@ func (bSet *buttonSet) setupButtons(sequenceLen int) {
 	}
 
 	bSet.content = buttonSet
+	bSet.hasActive = false
 }
 
 // Record if it is beat or half beat time
@@ -100,7 +142,7 @@ func (bSet *buttonSet) setFirstLoop() {
 }
 
 // Update the buttons
-func (bSet *buttonSet) update(cursorX, cursorY int) (click bool, clickKind int, positionInSequence int) {
+func (bSet *buttonSet) update(cursorX, cursorY int, inSetUp bool) (click bool, clickKind int, positionInSequence int, smallPosition int) {
 
 	hoveredPos := -1
 
@@ -113,7 +155,33 @@ func (bSet *buttonSet) update(cursorX, cursorY int) (click bool, clickKind int, 
 	}
 
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && hoveredPos != -1 {
-		return true, bSet.content[hoveredPos].kind, bSet.content[hoveredPos].positionInSequence
+
+		click = true
+		clickKind = bSet.content[hoveredPos].kind
+		positionInSequence = bSet.content[hoveredPos].positionInSequence
+		smallPosition = bSet.content[hoveredPos].smallPosition
+
+		if inSetUp {
+			if bSet.content[hoveredPos].kind == buttonSequence {
+				if bSet.activePosition == hoveredPos && bSet.hasActive {
+					bSet.hasActive = false
+					bSet.removeButtons()
+				} else {
+					if bSet.hasActive {
+						bSet.removeButtons()
+					}
+					bSet.activePosition = hoveredPos
+					bSet.hasActive = true
+					bSet.addButtons(true)
+				}
+			} else if bSet.content[hoveredPos].kind == buttonSelectMove {
+				bSet.hasActive = false
+				bSet.removeButtons()
+			} else {
+				bSet.hasActive = false
+				bSet.removeButtons()
+			}
+		}
 	}
 
 	return
@@ -122,7 +190,7 @@ func (bSet *buttonSet) update(cursorX, cursorY int) (click bool, clickKind int, 
 // Draw the buttons
 func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool, screen *ebiten.Image) {
 
-	for _, button := range buttonSet.content {
+	for buttonNum, button := range buttonSet.content {
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(button.drawX, button.drawY)
 
@@ -130,27 +198,48 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 		directionNum := nothing
 		switch button.kind {
 		case buttonPlay:
-			imageNum = 11
+			imageNum = 18
 			if button.hover {
 				imageNum += 2
 			}
 		case buttonReset:
-			imageNum = 12
+			imageNum = 19
 			if button.hover {
 				imageNum += 2
 			}
 		case buttonSequence:
-			imageNum = 8
+			imageNum = 15
 			directionNum = sequence[button.positionInSequence]
 			if (!button.hover && buttonSet.onBeat && !inPlay && directionNum == nothing) ||
 				(button.hover && !inPlay) ||
+				(buttonSet.hasActive && buttonSet.activePosition == buttonNum) ||
 				(button.hover && inPlay && (currentPosition != button.positionInSequence || !buttonSet.onBeat)) {
-				imageNum = 9
+				imageNum = 16
+				directionNum += nothing
 			} else if currentPosition == button.positionInSequence &&
 				buttonSet.onBeat && inPlay && !buttonSet.firstLoop {
-				imageNum = 10
-				directionNum += nothing
+				imageNum = 17
+				directionNum += 2 * nothing
 			}
+		case buttonSelectMove:
+			imageNum = button.smallPosition
+			if imageNum >= sequence[button.positionInSequence] {
+				imageNum++
+			}
+			if !button.smallReset && imageNum >= moveReset {
+				imageNum++
+			}
+			imageNum += levelUpBox + 1
+		}
+
+		if button.kind == buttonSelectMove {
+			options.GeoM.Translate(-globalTileMargin, -globalTileMargin)
+			screen.DrawImage(tilesImage.SubImage(
+				image.Rect(imageNum*(globalTileSize+2*globalTileMargin), 0,
+					(imageNum+1)*(globalTileSize+2*globalTileMargin),
+					globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+				options)
+			continue
 		}
 
 		screen.DrawImage(buttonsImage.SubImage(

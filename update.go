@@ -37,10 +37,8 @@ func (g *game) Update() error {
 		g.character.setHalfBeat()
 	}
 
-	clicked, buttonKind, positionInSequence := g.buttonSet.update(g.cursor.x, g.cursor.y)
-	if clicked {
-		log.Print(positionInSequence)
-	}
+	clicked, buttonKind, positionInSequence, smallPosition :=
+		g.buttonSet.update(g.cursor.x, g.cursor.y, g.state == stateSetupSequence)
 
 	if clicked && buttonKind == buttonReset {
 		g.character.reset(levelSet[g.level])
@@ -52,6 +50,9 @@ func (g *game) Update() error {
 			if clicked && buttonKind == buttonPlay {
 				g.state = statePlaySequence
 				g.buttonSet.setFirstLoop()
+			} else if clicked && buttonKind == buttonSelectMove {
+				g.character.moveSequence[positionInSequence] =
+					getMoveFromChoice(smallPosition, g.character.moveSequence[positionInSequence], true)
 			}
 		} else if g.state == statePlaySequence {
 
@@ -77,4 +78,17 @@ func (g *game) Update() error {
 	g.soundEngine.playNow()
 
 	return nil
+}
+
+// Retrieve the move chosen from the number of a small choice
+// button and the current move in the sequence of moves
+func getMoveFromChoice(choice, currentMove int, withReset bool) (newMove int) {
+	newMove = choice
+	if newMove >= currentMove {
+		newMove++
+	}
+	if !withReset && newMove >= moveReset {
+		newMove++
+	}
+	return
 }
