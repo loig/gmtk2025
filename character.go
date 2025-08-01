@@ -172,6 +172,10 @@ func (c *character) updateOnHalfBeat() (playSound bool, soundID int) {
 		c.levelArea[c.y][c.x], c.moveSequence[c.currentMovePosition] =
 			c.moveSequence[c.currentMovePosition]+levelUpBox,
 			c.levelArea[c.y][c.x]-levelUpBox
+		playSound, soundID = true, soundG4
+	case levelReset:
+		c.nextMovePosition = 0
+		playSound, soundID = true, soundG4
 	}
 
 	return
