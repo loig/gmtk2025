@@ -67,8 +67,8 @@ func (bSet *buttonSet) addButtons(withReset bool) {
 	for num := 0; num < numButtons; num++ {
 		bSet.content = append(bSet.content, button{
 			drawX: float64(x), drawY: float64(y),
-			x: x, y: y,
-			width: globalTileSize, height: globalTileSize,
+			x: x, y: y - globalTileMargin/4,
+			width: globalTileSize, height: globalTileSize + globalTileMargin/2,
 			kind:               buttonSelectMove,
 			positionInSequence: position,
 			smallPosition:      num,
@@ -234,6 +234,9 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 
 		if button.kind == buttonSelectMove {
 			options.GeoM.Translate(-globalTileMargin, -globalTileMargin)
+			if button.hover {
+				options.GeoM.Translate(0, 3)
+			}
 			screen.DrawImage(tilesImage.SubImage(
 				image.Rect(imageNum*(globalTileSize+2*globalTileMargin), 0,
 					(imageNum+1)*(globalTileSize+2*globalTileMargin),

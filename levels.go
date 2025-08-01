@@ -59,6 +59,9 @@ const (
 //go:embed levels/test
 var testLevelBytes []byte
 
+//go:embed levels/test1
+var testLevel1Bytes []byte
+
 // Read a text file representing a level
 func readLevel(levelBytes []byte) (l level) {
 	x, y := 0, -1
@@ -158,6 +161,7 @@ func simplifyLevelArea(area [][]int) {
 // Set up the levels
 func initLevels() {
 
+	levelSet = append(levelSet, readLevel(testLevel1Bytes))
 	levelSet = append(levelSet, readLevel(testLevelBytes))
 
 }

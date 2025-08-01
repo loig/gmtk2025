@@ -17,10 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
-import (
-	"log"
-)
-
 func (g *game) Update() error {
 
 	g.cursor.update()
@@ -72,7 +68,8 @@ func (g *game) Update() error {
 			}
 
 			if g.character.checkGoal() {
-				log.Print("The end")
+				g.level++
+				g.setLevel()
 			}
 		}
 

@@ -39,8 +39,12 @@ func newGame() (g game) {
 	g.soundEngine = newSoundEngine()
 	g.sequencer = newSequencer(110, 4)
 	g.level = 0
+	g.setLevel()
+	return
+}
+
+func (g *game) setLevel() {
 	g.character.reset(levelSet[g.level])
 	g.state = stateSetupSequence
 	g.buttonSet.setupButtons(len(g.character.moveSequence))
-	return
 }
