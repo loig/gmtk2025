@@ -110,6 +110,7 @@ func (g *game) Update() error {
 	}
 
 	if clicked && buttonKind == buttonReset {
+		g.character.restoreMoves()
 		g.character.reset(levelSet[g.level], g.state == stateSetupSequence)
 		g.state = stateSetupSequence
 		g.soundEngine.nextSounds[soundBack] = true
@@ -122,6 +123,7 @@ func (g *game) Update() error {
 				g.soundEngine.nextSounds[soundGo] = true
 				g.state = statePlaySequence
 				g.buttonSet.setFirstLoop()
+				g.character.storeMoves()
 			} else if clicked && buttonKind == buttonSelectMove {
 				g.character.moveSequence[positionInSequence] =
 					getMoveFromChoice(smallPosition, g.character.moveSequence[positionInSequence], g.level >= levelStepReset)

@@ -29,6 +29,7 @@ import (
 type character struct {
 	x, y                   int
 	moveSequence           []int
+	originalMoveSequence   []int
 	nextMovePosition       int
 	currentMovePosition    int
 	HideMove               bool
@@ -48,6 +49,15 @@ const (
 	nothing
 )
 
+// Store and restore move sequence
+func (c *character) storeMoves() {
+	copy(c.originalMoveSequence, c.moveSequence)
+}
+
+func (c *character) restoreMoves() {
+	copy(c.moveSequence, c.originalMoveSequence)
+}
+
 // Reset a given level by emptying the sequence
 // of moves, moving the character to the start,
 // copying the area (in case consumables were
@@ -57,8 +67,10 @@ func (c *character) reset(level level, resetSequence bool) {
 	c.y = level.startY
 	if resetSequence {
 		c.moveSequence = make([]int, level.sequenceLen)
+		c.originalMoveSequence = make([]int, level.sequenceLen)
 		for pos := 0; pos < len(c.moveSequence); pos++ {
 			c.moveSequence[pos] = nothing
+			c.originalMoveSequence[pos] = nothing
 		}
 	}
 	c.nextMovePosition = 0
