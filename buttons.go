@@ -63,21 +63,25 @@ func (bSet *buttonSet) addButtons(withReset bool) {
 		numButtons++
 	}
 
-	x := bSet.content[bSet.activePosition].x + (globalButtonWidth-numButtons*globalTileSize)/2
-	y := bSet.content[bSet.activePosition].y - globalTileSize + globalTileMargin
+	buttonWidth := 28
+	buttonHeight := 38 + 3 // 3 is the shift when hovering
+	buttonSep := 4
+
+	x := bSet.content[bSet.activePosition].x - 6 + (globalButtonWidth-numButtons*(buttonWidth+buttonSep))/2
+	y := bSet.content[bSet.activePosition].y - 6 - buttonHeight
 	position := bSet.content[bSet.activePosition].positionInSequence
 
 	for num := 0; num < numButtons; num++ {
 		bSet.content = append(bSet.content, button{
 			drawX: float64(x), drawY: float64(y),
 			x: x, y: y - globalTileMargin/4,
-			width: globalTileSize, height: globalTileSize + globalTileMargin/2,
+			width: buttonWidth, height: buttonHeight,
 			kind:               buttonSelectMove,
 			positionInSequence: position,
 			smallPosition:      num,
 			smallReset:         withReset,
 		})
-		x += globalTileSize
+		x += buttonWidth + buttonSep
 	}
 
 }
@@ -98,8 +102,8 @@ func (bSet *buttonSet) setupButtons(sequenceLen int) {
 	// Play button
 	buttonSet[0] = button{
 		drawX: 0, drawY: float64(globalScreenHeight - globalButtonHeight),
-		x: 0, y: globalScreenHeight - globalButtonHeight,
-		width: globalButtonWidth, height: globalButtonHeight,
+		x: 8, y: globalScreenHeight - globalButtonHeight + 37,
+		width: 65, height: 72,
 		kind: buttonPlay,
 	}
 
@@ -107,9 +111,9 @@ func (bSet *buttonSet) setupButtons(sequenceLen int) {
 	buttonSet[1] = button{
 		drawX: globalScreenWidth - globalButtonWidth,
 		drawY: float64(globalScreenHeight - globalButtonHeight),
-		x:     globalScreenWidth - globalButtonWidth,
-		y:     globalScreenHeight - globalButtonHeight,
-		width: globalButtonWidth, height: globalButtonHeight,
+		x:     globalScreenWidth - globalButtonWidth + 8,
+		y:     globalScreenHeight - globalButtonHeight + 37,
+		width: 65, height: 72,
 		kind: buttonReset,
 	}
 
@@ -142,8 +146,8 @@ func (bSet *buttonSet) setupButtons(sequenceLen int) {
 	for pos := 0; pos < sequenceLen; pos++ {
 		buttonSet[pos+5] = button{
 			drawX: float64(x), drawY: float64(globalScreenHeight - globalButtonHeight),
-			x: x, y: globalScreenHeight - globalButtonHeight,
-			width: globalButtonWidth, height: globalButtonHeight,
+			x: x + 6, y: globalScreenHeight - globalButtonHeight + 21,
+			width: 68, height: 93,
 			kind:               buttonSequence,
 			positionInSequence: pos,
 		}
@@ -262,7 +266,7 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 		}
 
 		if button.kind == buttonSelectMove {
-			options.GeoM.Translate(-globalTileMargin, -globalTileMargin)
+			options.GeoM.Translate(-16, -6)
 			if button.hover {
 				options.GeoM.Translate(0, 3)
 			}

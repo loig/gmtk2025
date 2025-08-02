@@ -35,7 +35,7 @@ func (t title) draw(screen *ebiten.Image) {
 	// Title
 	for charNum := 0; charNum < 4; charNum++ {
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(charNum)*200, 60)
+		options.GeoM.Translate(float64(charNum)*200, 70)
 		if t.onBeat && t.upChar == charNum {
 			options.GeoM.Translate(0, -10)
 		}
@@ -50,7 +50,7 @@ func (t title) draw(screen *ebiten.Image) {
 	charX := 255
 	for pos, charPos := range charPositions {
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(charX), 320)
+		options.GeoM.Translate(float64(charX), 330)
 
 		if t.upSubChar == pos+1 {
 			options.GeoM.Translate(0, -5)
@@ -63,11 +63,15 @@ func (t title) draw(screen *ebiten.Image) {
 	}
 
 	// Click text
-	y := 460
+	y := 470
 	if t.onBeat {
 		y -= 5
 	}
 	drawTextAt("Click to start", 300, float64(y), screen)
+
+	// Info text
+	text := "A game for GMTK game jam 2025"
+	drawTextAt(text, 20, 10, screen)
 
 }
 
