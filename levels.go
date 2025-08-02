@@ -79,6 +79,9 @@ var learnresetLevelBytes []byte
 // Set up the levels
 func initLevels() {
 
+	// For tests, to be removed
+	levelSet = append(levelSet, readLevel(learnblockLevelBytes))
+
 	// First level
 	levelSet = append(levelSet, readLevel(learnLevelBytes))
 
@@ -94,8 +97,6 @@ func initLevels() {
 	levelSteps[2] = len(levelSet)
 	levelSet = append(levelSet, readLevel(learnresetLevelBytes))
 	levelStepReset = len(levelSet)
-
-	levelSet = append(levelSet, readLevel(testLevel1Bytes))
 
 }
 

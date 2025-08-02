@@ -219,7 +219,7 @@ func (bSet *buttonSet) update(cursorX, cursorY int, inSetUp bool, withReset bool
 }
 
 // Draw the buttons
-func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool, musicOn bool, screen *ebiten.Image) {
+func (buttonSet buttonSet) draw(sequence []int, currentPosition int, hideMove bool, inPlay bool, musicOn bool, screen *ebiten.Image) {
 
 	for buttonNum, button := range buttonSet.content {
 		options := &ebiten.DrawImageOptions{}
@@ -241,6 +241,9 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 		case buttonSequence:
 			imageNum = 15
 			directionNum = sequence[button.positionInSequence]
+			if button.positionInSequence != currentPosition {
+				hideMove = false
+			}
 			if buttonSet.hasActive && buttonSet.activePosition == buttonNum {
 				imageNum = 17
 				directionNum += 2 * nothing
@@ -306,7 +309,8 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 			options)
 
 		if button.kind == buttonSequence &&
-			sequence[button.positionInSequence] != nothing {
+			sequence[button.positionInSequence] != nothing &&
+			!hideMove {
 			screen.DrawImage(buttonsImage.SubImage(
 				image.Rect(directionNum*globalButtonWidth, 0,
 					(directionNum+1)*globalButtonWidth,

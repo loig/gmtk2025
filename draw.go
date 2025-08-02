@@ -40,9 +40,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.buttonSet.draw(
 			g.character.moveSequence,
 			g.character.currentMovePosition,
+			g.character.HideMove,
 			g.state == statePlaySequence,
 			!g.soundEngine.mute,
 			screen)
+
+		g.boxSwitcher.draw(screen)
 
 		g.drawLevelInfo(screen)
 	}

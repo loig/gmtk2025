@@ -113,6 +113,7 @@ func (g *game) Update() error {
 		g.character.reset(levelSet[g.level], g.state == stateSetupSequence)
 		g.state = stateSetupSequence
 		g.soundEngine.nextSounds[soundBack] = true
+		g.boxSwitcher.reset()
 	} else {
 
 		// Setup a sequence
@@ -128,7 +129,10 @@ func (g *game) Update() error {
 		} else if g.state == statePlaySequence {
 			// Run a sequence
 
+			g.boxSwitcher.update()
+
 			if newBeat && g.character.checkGoal() {
+				g.boxSwitcher.reset()
 				g.level++
 				g.evolutionSubStep++
 				g.soundEngine.nextSounds[soundSuccess] = true
@@ -144,9 +148,17 @@ func (g *game) Update() error {
 			}
 
 			if halfBeat {
-				playSound, soundID := g.character.updateOnHalfBeat()
+				playSound, soundID, switchBoxes := g.character.updateOnHalfBeat()
 				if playSound {
 					g.soundEngine.nextSounds[soundID] = true
+				}
+				if switchBoxes {
+					g.boxSwitcher.setUp(g.character.x, g.character.y,
+						g.character.displayX, g.character.displayY,
+						len(g.character.moveSequence), g.character.currentMovePosition,
+						g.bpm,
+						g.character.levelArea[g.character.y][g.character.x]-levelUpBox,
+						g.character.moveSequence[g.character.currentMovePosition])
 				}
 			}
 

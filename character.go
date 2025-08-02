@@ -31,6 +31,7 @@ type character struct {
 	moveSequence           []int
 	nextMovePosition       int
 	currentMovePosition    int
+	HideMove               bool
 	levelArea              [][]int
 	levelGoalX, levelGoalY int
 	displayX, displayY     float64
@@ -80,6 +81,7 @@ func (c *character) reset(level level, resetSequence bool) {
 // step is not "do nothing" then a sound is
 // played on the beat.
 func (c *character) updateOnBeat() (playSound bool, soundID int) {
+	c.HideMove = false
 	if c.applyMove(c.moveSequence[c.nextMovePosition]) {
 		playSound, soundID = getMoveSoundId(c.moveSequence[c.nextMovePosition])
 	} else {
@@ -161,7 +163,7 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 // On each half beat consumables are consumed
 // and their effects are applied. This produces
 // a sound on the half beat.
-func (c *character) updateOnHalfBeat() (playSound bool, soundID int) {
+func (c *character) updateOnHalfBeat() (playSound bool, soundID int, switchBoxes bool) {
 
 	effect := c.levelArea[c.y][c.x]
 
@@ -178,7 +180,8 @@ func (c *character) updateOnHalfBeat() (playSound bool, soundID int) {
 		}
 		c.levelArea[c.y][c.x], c.moveSequence[c.currentMovePosition] =
 			newFloor, newMove
-		playSound, soundID = true, soundG4
+		playSound, soundID, switchBoxes = true, soundG4, true
+		c.HideMove = true
 	case levelReset:
 		c.nextMovePosition = 0
 		playSound, soundID = true, soundG4
