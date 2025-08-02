@@ -148,13 +148,13 @@ func getMoveSoundId(move int) (playSound bool, soundID int) {
 	case moveUp:
 		soundID = soundC3
 	case moveRight:
-		soundID = soundE3
-	case moveDown:
 		soundID = soundG3
-	case moveLeft:
+	case moveDown:
 		soundID = soundC4
+	case moveLeft:
+		soundID = soundG4
 	case moveReset:
-		soundID = soundC2
+		soundID = soundE4
 	}
 
 	return true, soundID
@@ -170,7 +170,7 @@ func (c *character) updateOnHalfBeat() (playSound bool, soundID int, switchBoxes
 	switch effect {
 	case levelUp, levelLeft, levelDown, levelRight:
 		if c.applyMove(c.levelArea[c.y][c.x] - levelUp) {
-			playSound, soundID = true, soundG4
+			playSound, soundID = true, soundC5
 		}
 	case levelUpBox, levelLeftBox, levelDownBox, levelRightBox, levelResetBox, levelNothingBox:
 		newMove := c.levelArea[c.y][c.x] - levelUpBox
@@ -180,11 +180,11 @@ func (c *character) updateOnHalfBeat() (playSound bool, soundID int, switchBoxes
 		}
 		c.levelArea[c.y][c.x], c.moveSequence[c.currentMovePosition] =
 			newFloor, newMove
-		playSound, soundID, switchBoxes = true, soundG4, true
+		playSound, soundID, switchBoxes = true, soundC5, true
 		c.HideMove = true
 	case levelReset:
 		c.nextMovePosition = 0
-		playSound, soundID = true, soundG4
+		playSound, soundID = true, soundC5
 	}
 
 	return

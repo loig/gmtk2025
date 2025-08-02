@@ -52,7 +52,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 	g.cursor.draw(screen)
 
-	drawTextAt(fmt.Sprintf("TPS: %f, FPS:%f", ebiten.ActualTPS(), ebiten.ActualFPS()), 0, 0, screen)
+	//drawTextAt(fmt.Sprintf("TPS: %f, FPS:%f", ebiten.ActualTPS(), ebiten.ActualFPS()), 0, 0, screen)
 
 }
 

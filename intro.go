@@ -66,7 +66,9 @@ func (l *intro) update() (done bool) {
 
 func (l *intro) updateOnBeat() (playSound bool) {
 	if l.step < len(l.text) {
-		playSound = l.beat < len(l.text[l.step]) && l.text[l.step][l.beat] != ' '
+		playSound = l.beat < len(l.text[l.step]) &&
+			l.text[l.step][l.beat] != ' ' &&
+			l.text[l.step][l.beat] != '\n'
 		l.beat++
 		if l.beat >= len(l.text[l.step])+2 {
 			l.beat = 0

@@ -36,6 +36,15 @@ var snareBytes []byte
 //go:embed assets/CLHAT1.WAV
 var hatsBytes []byte
 
+//go:embed assets/OPHAT1.WAV
+var hats2Bytes []byte
+
+//go:embed assets/ArpBC1.wav
+var bassBytes []byte
+
+//go:embed assets/ArpBG1.wav
+var bass2Bytes []byte
+
 //go:embed assets/ArpBC2.wav
 var c2Bytes []byte
 
@@ -45,8 +54,14 @@ var c3Bytes []byte
 //go:embed assets/ArpBC4.wav
 var c4Bytes []byte
 
+//go:embed assets/ArpBC5.wav
+var c5Bytes []byte
+
 //go:embed assets/ArpBE3.wav
 var e3Bytes []byte
+
+//go:embed assets/ArpBE4.wav
+var e4Bytes []byte
 
 //go:embed assets/ArpBG3.wav
 var g3Bytes []byte
@@ -90,12 +105,17 @@ const (
 	soundKick int = iota
 	soundSnare
 	soundHats
+	soundHats2
 	soundC2
 	soundC3
 	soundC4
+	soundC5
 	soundE3
+	soundE4
 	soundG3
 	soundG4
+	soundBass
+	soundBass2
 	soundBlip
 	soundBlip2
 	soundBlip3
@@ -145,6 +165,33 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(hats2Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundHats2], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(bassBytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundBass], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(bass2Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundBass2], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
 	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(c2Bytes))
 	if err != nil {
 		log.Panic("Audio problem: ", err)
@@ -172,11 +219,29 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(c5Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundC5], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
 	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(e3Bytes))
 	if err != nil {
 		log.Panic("Audio problem: ", err)
 	}
 	engine.sounds[soundE3], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(e4Bytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundE4], err = io.ReadAll(sound)
 	if err != nil {
 		log.Panic("Audio problem: ", err)
 	}
@@ -279,6 +344,17 @@ func (e *soundEngine) playNow() {
 func (e soundEngine) playSound(ID int) {
 	if !e.mute {
 		soundPlayer := e.audioContext.NewPlayerFromBytes(e.sounds[ID])
+		soundPlayer.SetVolume(0.25)
+		switch ID {
+		case soundHats2:
+			soundPlayer.SetVolume(0.15)
+		case soundBass, soundBass2, soundC2:
+			soundPlayer.SetVolume(0.2)
+		case soundC3, soundC4, soundC5, soundE3, soundE4, soundG3, soundG4:
+			soundPlayer.SetVolume(0.2)
+		case soundBlip:
+			soundPlayer.SetVolume(0.35)
+		}
 		soundPlayer.Play()
 	}
 }

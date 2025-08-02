@@ -58,12 +58,6 @@ const (
 	levelEmpty
 )
 
-//go:embed levels/test
-var testLevelBytes []byte
-
-//go:embed levels/test1
-var testLevel1Bytes []byte
-
 //go:embed levels/learn
 var learnLevelBytes []byte
 
@@ -78,9 +72,6 @@ var learnresetLevelBytes []byte
 
 // Set up the levels
 func initLevels() {
-
-	// For tests, to be removed
-	levelSet = append(levelSet, readLevel(learnblockLevelBytes))
 
 	// First level
 	levelSet = append(levelSet, readLevel(learnLevelBytes))

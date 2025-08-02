@@ -50,7 +50,7 @@ func (b *boxSwitcher) setUp(
 	b.moveBoxY = globalScreenHeight - 3*globalButtonHeight/4
 
 	b.frame = 0
-	b.numFrames = 3600 / (2 * bpm)
+	b.numFrames = 3600 / (4 * bpm)
 
 	distanceX := b.floorBoxX - b.moveBoxX
 	distanceY := b.floorBoxY - b.moveBoxY

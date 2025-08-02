@@ -88,9 +88,13 @@ func newSequencer(bpm, beats int) (s sequencer) {
 	s.setBpm(bpm)
 	s.numBeats = beats * 2
 	s.sequences = []sequence{
-		newSequence("x-2-----x-x-----x-----1xx-----x-x-------x-x-----x1x---x---x---5-", soundKick),
-		newSequence("----x-11----x-------x-------x-------x--8----x-------x--2----x---", soundSnare),
-		newSequence("--xx--x-xxx--xx--5xx--x-xxx--xx5--xx--x-xxx-5xx--5xx--x5xxx-5xx-", soundHats),
+		newSequence("x-------x-x-----x------xx-----x-x-------x-x-----x-x---x---x---5-", soundKick),
+		newSequence("----x--3----x-------x-------x-------x--8----x-------x-------x---", soundSnare),
+		newSequence("--x---x--x----x----x--x-x-----x---x-------x-----xx----x-x------x", soundHats),
+		newSequence("-----x------x-----x-------x-x------x--x-x-----x-----x-----x---x-", soundHats2),
+		newSequence("x---x---x---x-------------------x---x---x---x-------------------", soundBass),
+		newSequence("----------------x---x---x---x---------------------------x---x---", soundBass2),
+		newSequence("------------------------------------------------x---x-----------", soundC2),
 	}
 	return
 }
