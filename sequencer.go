@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
-	"log"
 	"math/rand"
 )
 
@@ -55,7 +54,6 @@ func newSequence(steps string, soundID int) (s sequence) {
 			}
 		}
 	}
-	log.Print(s)
 	return
 }
 

@@ -19,7 +19,6 @@ package main
 
 import (
 	"image"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -61,8 +60,6 @@ func (b *boxSwitcher) setUp(
 
 	b.floor = seqMove
 	b.move = floorMove
-
-	log.Printf("Set up with floor %d and player %d", b.floor, b.move)
 
 }
 

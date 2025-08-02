@@ -270,16 +270,8 @@ func (e *soundEngine) playNow() {
 	for soundID, play := range e.nextSounds {
 		if play {
 			e.playSound(soundID)
-			//e.nextSounds[soundID] = false
+			e.nextSounds[soundID] = false
 		}
-	}
-}
-
-// Remove all sounds that have been registered for
-// playing in e.nextSounds.
-func (e *soundEngine) reset() {
-	for soundID := range e.nextSounds {
-		e.nextSounds[soundID] = false
 	}
 }
 
