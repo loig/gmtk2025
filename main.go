@@ -27,7 +27,7 @@ func main() {
 
 	g := newGame()
 
-	//g.state = stateSetupSequence
+	g.state = stateSetupSequence
 
 	ebiten.SetWindowTitle("CUB 2: Origins")
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)

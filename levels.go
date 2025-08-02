@@ -106,6 +106,18 @@ var block3LevelBytes []byte
 //go:embed levels/block4
 var block4LevelBytes []byte
 
+//go:embed levels/reset1
+var reset1LevelBytes []byte
+
+//go:embed levels/reset2
+var reset2LevelBytes []byte
+
+//go:embed levels/reset3
+var reset3LevelBytes []byte
+
+//go:embed levels/block5
+var block5LevelBytes []byte
+
 // Set up the levels
 func initLevels() {
 
@@ -125,20 +137,26 @@ func initLevels() {
 	//levelSet = append(levelSet, readLevel(automove2LevelBytes))
 	levelSet = append(levelSet, readLevel(automove1LevelBytes))
 	levelSet = append(levelSet, readLevel(automove4LevelBytes)) // maybe a bit difficult?
-	levelSet = append(levelSet, readLevel(automove5LevelBytes))
 
 	// From there replace blocks can be used
 	levelSteps[1] = len(levelSet)
 	levelSet = append(levelSet, readLevel(learnblockLevelBytes))
 
-	levelSet = append(levelSet, readLevel(block1LevelBytes))
+	levelSet = append(levelSet, readLevel(block5LevelBytes))
 	levelSet = append(levelSet, readLevel(block4LevelBytes))
-	levelSet = append(levelSet, readLevel(block3LevelBytes)) // not difficult if you get the idea of using an empty move
-	levelSet = append(levelSet, readLevel(block2LevelBytes)) // probably quite difficult
+	levelSet = append(levelSet, readLevel(block1LevelBytes))
+	levelSet = append(levelSet, readLevel(block3LevelBytes)) // need correction not difficult if you get the idea of using an empty move
 
 	// From there reset can be used (must be after learning auto moves)
 	levelSteps[2] = len(levelSet)
 	levelSet = append(levelSet, readLevel(learnresetLevelBytes))
+
+	levelSet = append(levelSet, readLevel(reset1LevelBytes))
+	levelSet = append(levelSet, readLevel(reset3LevelBytes))
+	levelSet = append(levelSet, readLevel(reset2LevelBytes))
+	levelSet = append(levelSet, readLevel(automove5LevelBytes)) // quite difficult
+	levelSet = append(levelSet, readLevel(block2LevelBytes))    // probably quite difficult
+
 	levelStepReset = len(levelSet)
 
 }

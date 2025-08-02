@@ -36,7 +36,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.end.draw(screen)
 	} else {
 		if g.level == 0 {
-			drawTuto(screen)
+			//drawTuto(screen)
 		}
 
 		g.character.draw(screen)
