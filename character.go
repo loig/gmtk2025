@@ -56,6 +56,7 @@ func (c *character) storeMoves() {
 
 func (c *character) restoreMoves() {
 	copy(c.moveSequence, c.originalMoveSequence)
+	c.HideMove = false
 }
 
 // Reset a given level by emptying the sequence
@@ -86,6 +87,7 @@ func (c *character) reset(level level, resetSequence bool) {
 	if len(level.area) > 0 {
 		c.displayX = float64(globalScreenWidth-len(level.area[0])*globalTileSize) / 2
 	}
+	c.HideMove = false
 }
 
 // The character performs one step of its

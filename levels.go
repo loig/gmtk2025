@@ -85,9 +85,6 @@ var basic4LevelBytes []byte
 //go:embed levels/automove1
 var automove1LevelBytes []byte
 
-//go:embed levels/automove2
-var automove2LevelBytes []byte
-
 //go:embed levels/automove3
 var automove3LevelBytes []byte
 
@@ -100,10 +97,17 @@ var automove5LevelBytes []byte
 //go:embed levels/block1
 var block1LevelBytes []byte
 
+//go:embed levels/block2
+var block2LevelBytes []byte
+
+//go:embed levels/block3
+var block3LevelBytes []byte
+
+//go:embed levels/block4
+var block4LevelBytes []byte
+
 // Set up the levels
 func initLevels() {
-
-	//levelSet = append(levelSet, readLevel(block1LevelBytes))
 
 	// First level
 	levelSet = append(levelSet, readLevel(learnLevelBytes))
@@ -126,6 +130,11 @@ func initLevels() {
 	// From there replace blocks can be used
 	levelSteps[1] = len(levelSet)
 	levelSet = append(levelSet, readLevel(learnblockLevelBytes))
+
+	levelSet = append(levelSet, readLevel(block1LevelBytes))
+	levelSet = append(levelSet, readLevel(block4LevelBytes))
+	levelSet = append(levelSet, readLevel(block3LevelBytes)) // not difficult if you get the idea of using an empty move
+	levelSet = append(levelSet, readLevel(block2LevelBytes)) // probably quite difficult
 
 	// From there reset can be used (must be after learning auto moves)
 	levelSteps[2] = len(levelSet)
@@ -191,7 +200,7 @@ func readLevel(levelBytes []byte) (l level) {
 		case 'B':
 			l.area[y] = append(l.area[y], levelResetBox)
 			x++
-		case 'n':
+		case 'N':
 			l.area[y] = append(l.area[y], levelNothingBox)
 			x++
 		default:
