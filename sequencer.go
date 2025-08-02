@@ -73,8 +73,12 @@ type sequencer struct {
 // Set the bpm of a given sequencer while keeping the state of
 // the sequence currently playing
 func (s *sequencer) setBpm(bpm int) {
-	newFramesPerBeat := 3600 / bpm
-	s.currentFrame = (s.currentFrame * newFramesPerBeat) / s.framesPerBeat
+	newFramesPerBeat := 3600 / (bpm * 2)
+	if s.framesPerBeat != 0 {
+		s.currentFrame = (s.currentFrame * newFramesPerBeat) / s.framesPerBeat
+	} else {
+		s.currentFrame = 0
+	}
 	s.framesPerBeat = newFramesPerBeat
 }
 
@@ -83,11 +87,12 @@ func (s *sequencer) setBpm(bpm int) {
 // The actual bpm is an approximation of the requested bpm
 // has everything is counted in frames.
 func newSequencer(bpm, beats int) (s sequencer) {
-	s.framesPerBeat = 3600 / bpm
-	s.numBeats = beats
+	s.setBpm(bpm)
+	s.numBeats = beats * 2
 	s.sequences = []sequence{
-		newSequence("x3--xx-2", soundKick),
-		newSequence("--x---x3", soundSnare),
+		newSequence("x-2-----x-x-----x-----1xx-----x-x-------x-x-----x1x---x---x---5-", soundKick),
+		newSequence("----x-11----x-------x-------x-------x--8----x-------x--2----x---", soundSnare),
+		newSequence("--xx--x-xxx--xx--5xx--x-xxx--xx5--xx--x-xxx-5xx--5xx--x5xxx-5xx-", soundHats),
 	}
 	return
 }

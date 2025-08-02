@@ -33,6 +33,9 @@ var kickBytes []byte
 //go:embed assets/SNR07.WAV
 var snareBytes []byte
 
+//go:embed assets/CLHAT1.WAV
+var hatsBytes []byte
+
 //go:embed assets/ArpBC2.wav
 var c2Bytes []byte
 
@@ -86,6 +89,7 @@ type soundEngine struct {
 const (
 	soundKick int = iota
 	soundSnare
+	soundHats
 	soundC2
 	soundC3
 	soundC4
@@ -128,6 +132,15 @@ func newSoundEngine() (engine soundEngine) {
 		log.Panic("Audio problem: ", err)
 	}
 	engine.sounds[soundSnare], err = io.ReadAll(sound)
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+
+	sound, err = wav.DecodeWithSampleRate(engine.audioContext.SampleRate(), bytes.NewReader(hatsBytes))
+	if err != nil {
+		log.Panic("Audio problem: ", err)
+	}
+	engine.sounds[soundHats], err = io.ReadAll(sound)
 	if err != nil {
 		log.Panic("Audio problem: ", err)
 	}
@@ -257,8 +270,16 @@ func (e *soundEngine) playNow() {
 	for soundID, play := range e.nextSounds {
 		if play {
 			e.playSound(soundID)
-			e.nextSounds[soundID] = false
+			//e.nextSounds[soundID] = false
 		}
+	}
+}
+
+// Remove all sounds that have been registered for
+// playing in e.nextSounds.
+func (e *soundEngine) reset() {
+	for soundID := range e.nextSounds {
+		e.nextSounds[soundID] = false
 	}
 }
 

@@ -26,6 +26,8 @@ import (
 
 func (g *game) Draw(screen *ebiten.Image) {
 
+	g.soundEngine.playNow()
+
 	screen.Fill(color.RGBA{R: 0xca, G: 0xa0, B: 0x5a, A: 255})
 
 	if g.state == stateTitle {

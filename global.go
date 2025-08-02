@@ -27,7 +27,7 @@ const (
 	globalSmallButtonWidth  = 28
 	globalSmallButtonHeight = 31
 
-	globalDefaultBPM = 110
+	globalDefaultBPM = 80
 	globalMinBPM     = 20
-	globalMaxBPM     = 300
+	globalMaxBPM     = 150
 )

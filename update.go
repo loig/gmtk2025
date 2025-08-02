@@ -21,7 +21,8 @@ import "math/rand/v2"
 
 func (g *game) Update() error {
 
-	defer g.soundEngine.playNow()
+	g.soundEngine.reset()
+	//defer g.soundEngine.playNow()
 
 	g.cursor.update()
 

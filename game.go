@@ -49,7 +49,7 @@ func newGame() (g game) {
 	initLevels()
 	g.soundEngine = newSoundEngine()
 	g.reset()
-	g.sequencer = newSequencer(g.bpm, 4)
+	g.sequencer = newSequencer(g.bpm, 16)
 	return
 }
 
