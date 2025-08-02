@@ -35,6 +35,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 	} else if g.state == stateEnd {
 		g.end.draw(screen)
 	} else {
+		if g.level == 0 {
+			drawTuto(screen)
+		}
+
 		g.character.draw(screen)
 
 		g.buttonSet.draw(
@@ -67,4 +71,14 @@ func (g game) drawLevelInfo(screen *ebiten.Image) {
 	text = fmt.Sprintf("Freq. %d", g.bpm)
 	drawTextAt(text, 650, 10, screen)
 
+}
+
+func drawTuto(screen *ebiten.Image) {
+	drawTextAt("Change speed →", 505, 50, screen)
+	drawTextAt("← Stop sound", 50, 50, screen)
+	drawTextAt("This is C.U.B →", 50, 150, screen)
+	drawTextAt("← Move C.U.B here", 535, 290, screen)
+	drawTextAt("Create loop\n     ↓", 320, 420, screen)
+	drawTextAt("Start loop\n  ↓", 10, 435, screen)
+	drawTextAt("Restart level\nor erase loop\n          ↓", 600, 400, screen)
 }
