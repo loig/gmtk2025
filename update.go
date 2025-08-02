@@ -139,6 +139,14 @@ func (g *game) Update() error {
 				g.evolutionSubStep++
 				g.soundEngine.nextSounds[soundSuccess] = true
 				g.setLevel()
+				if g.level == levelSteps[0] || g.level == levelSteps[1] || g.level == levelSteps[2] {
+					g.oldBpm = g.bpm
+					g.bpm = 50
+					g.sequencer.setBpm(g.bpm)
+				} else if g.level == levelSteps[0]+1 || g.level == levelSteps[1]+1 || g.level == levelSteps[2]+1 {
+					g.bpm = g.oldBpm
+					g.sequencer.setBpm(g.bpm)
+				}
 				return nil
 			}
 

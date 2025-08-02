@@ -31,6 +31,7 @@ type game struct {
 	evolutionStep    int
 	evolutionSubStep int
 	bpm              int
+	oldBpm           int
 	boxSwitcher      boxSwitcher
 }
 

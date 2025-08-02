@@ -36,7 +36,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.end.draw(screen)
 	} else {
 		if g.level == 0 {
-			//drawTuto(screen)
+			drawTuto(screen)
+		}
+
+		if g.level == levelSteps[0] || g.level == levelSteps[1] || g.level == levelSteps[2] {
+			drawLearningInfo(screen, g.level)
 		}
 
 		g.character.draw(screen)
@@ -81,4 +85,19 @@ func drawTuto(screen *ebiten.Image) {
 	drawTextAt("Create loop\n     ↓", 320, 420, screen)
 	drawTextAt("Start loop\n  ↓", 10, 435, screen)
 	drawTextAt("Restart level\nor erase loop\n          ↓", 600, 400, screen)
+}
+
+func drawLearningInfo(screen *ebiten.Image, levelNum int) {
+
+	text := "Low speed for new learning: "
+	switch {
+	case levelNum == levelSteps[0]:
+		text += "auto move"
+	case levelNum == levelSteps[1]:
+		text += "move switch"
+	case levelNum == levelSteps[2]:
+		text += "loop restart"
+	}
+
+	drawTextAt(text, 100, 50, screen)
 }
