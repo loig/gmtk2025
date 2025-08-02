@@ -17,8 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package main
 
-import "log"
-
 type game struct {
 	state            int
 	soundEngine      soundEngine
@@ -32,6 +30,7 @@ type game struct {
 	end              intro
 	evolutionStep    int
 	evolutionSubStep int
+	bpm              int
 }
 
 // Possible game states
@@ -48,9 +47,8 @@ func newGame() (g game) {
 	loadImages()
 	initLevels()
 	g.soundEngine = newSoundEngine()
-	g.sequencer = newSequencer(110, 4)
 	g.reset()
-	log.Print(g.state)
+	g.sequencer = newSequencer(g.bpm, 4)
 	return
 }
 
@@ -62,6 +60,7 @@ func (g *game) reset() {
 	g.evolutionSubStep = 0
 	g.setLevel()
 	g.state = stateTitle
+	g.bpm = globalDefaultBPM
 }
 
 func (g *game) setLevel() {
@@ -73,6 +72,8 @@ func (g *game) setLevel() {
 	}
 	if g.level >= len(levelSet) {
 		g.state = stateEnd
+		g.bpm = globalDefaultBPM
+		g.sequencer.setBpm(g.bpm)
 		return
 	}
 	g.character.reset(levelSet[g.level], true)

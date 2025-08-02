@@ -87,6 +87,28 @@ func (g *game) Update() error {
 	clicked, buttonKind, positionInSequence, smallPosition :=
 		g.buttonSet.update(g.cursor.x, g.cursor.y, g.state == stateSetupSequence, g.level >= levelStepReset)
 
+	if clicked && buttonKind == buttonIncBPM {
+		g.bpm += 5
+		if g.bpm > globalMaxBPM {
+			g.bpm = globalMaxBPM
+		} else {
+			g.sequencer.setBpm(g.bpm)
+		}
+	}
+
+	if clicked && buttonKind == buttonDecBPM {
+		g.bpm -= 5
+		if g.bpm < globalMinBPM {
+			g.bpm = globalMinBPM
+		} else {
+			g.sequencer.setBpm(g.bpm)
+		}
+	}
+
+	if clicked && buttonKind == buttonToggleSound {
+		g.soundEngine.toggleSound()
+	}
+
 	if clicked && buttonKind == buttonReset {
 		g.character.reset(levelSet[g.level], g.state == stateSetupSequence)
 		g.state = stateSetupSequence

@@ -41,6 +41,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			g.character.moveSequence,
 			g.character.currentMovePosition,
 			g.state == statePlaySequence,
+			!g.soundEngine.mute,
 			screen)
 
 		g.drawLevelInfo(screen)
@@ -57,5 +58,8 @@ func (g game) drawLevelInfo(screen *ebiten.Image) {
 		text = fmt.Sprintf("%s.%d", text, g.evolutionSubStep)
 	}
 	drawTextAt(text, 20, 10, screen)
+
+	text = fmt.Sprintf("Freq. %d", g.bpm)
+	drawTextAt(text, 650, 10, screen)
 
 }

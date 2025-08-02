@@ -70,6 +70,14 @@ type sequencer struct {
 	currentFrame  int
 }
 
+// Set the bpm of a given sequencer while keeping the state of
+// the sequence currently playing
+func (s *sequencer) setBpm(bpm int) {
+	newFramesPerBeat := 3600 / bpm
+	s.currentFrame = (s.currentFrame * newFramesPerBeat) / s.framesPerBeat
+	s.framesPerBeat = newFramesPerBeat
+}
+
 // Create a new sequencer given a bpm (beats per minute)
 // and a number of beats per sequencer cycle.
 // The actual bpm is an approximation of the requested bpm

@@ -50,6 +50,9 @@ const (
 	buttonReset
 	buttonSequence
 	buttonSelectMove
+	buttonIncBPM
+	buttonDecBPM
+	buttonToggleSound
 )
 
 // Add small move buttons to a set
@@ -90,7 +93,7 @@ func (bSet *buttonSet) removeButtons() {
 
 // Initialize the button set for a given level
 func (bSet *buttonSet) setupButtons(sequenceLen int) {
-	buttonSet := make([]button, sequenceLen+2, sequenceLen+7)
+	buttonSet := make([]button, sequenceLen+5, sequenceLen+10)
 
 	// Play button
 	buttonSet[0] = button{
@@ -110,10 +113,34 @@ func (bSet *buttonSet) setupButtons(sequenceLen int) {
 		kind: buttonReset,
 	}
 
+	// Sequencer control buttons
+	smallButtonX := 724
+	buttonSet[2] = button{
+		drawX: float64(smallButtonX), drawY: 50,
+		x: smallButtonX, y: 50,
+		width: globalSmallButtonWidth, height: globalSmallButtonHeight,
+		kind: buttonDecBPM,
+	}
+	smallButtonX += 35
+	buttonSet[3] = button{
+		drawX: float64(smallButtonX), drawY: 50,
+		x: smallButtonX, y: 50,
+		width: globalSmallButtonWidth, height: globalSmallButtonHeight,
+		kind: buttonIncBPM,
+	}
+
+	// Toggle sound
+	buttonSet[4] = button{
+		drawX: 10, drawY: 50,
+		x: 10, y: 50,
+		width: globalSmallButtonWidth, height: globalSmallButtonHeight,
+		kind: buttonToggleSound,
+	}
+
 	// Sequence buttons
 	x := (globalScreenWidth - sequenceLen*globalButtonWidth) / 2
 	for pos := 0; pos < sequenceLen; pos++ {
-		buttonSet[pos+2] = button{
+		buttonSet[pos+5] = button{
 			drawX: float64(x), drawY: float64(globalScreenHeight - globalButtonHeight),
 			x: x, y: globalScreenHeight - globalButtonHeight,
 			width: globalButtonWidth, height: globalButtonHeight,
@@ -188,7 +215,7 @@ func (bSet *buttonSet) update(cursorX, cursorY int, inSetUp bool, withReset bool
 }
 
 // Draw the buttons
-func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool, screen *ebiten.Image) {
+func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool, musicOn bool, screen *ebiten.Image) {
 
 	for buttonNum, button := range buttonSet.content {
 		options := &ebiten.DrawImageOptions{}
@@ -243,6 +270,27 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 				image.Rect(imageNum*(globalTileSize+2*globalTileMargin), 0,
 					(imageNum+1)*(globalTileSize+2*globalTileMargin),
 					globalTileSize+2*globalTileMargin)).(*ebiten.Image),
+				options)
+			continue
+		}
+
+		if button.kind == buttonIncBPM ||
+			button.kind == buttonDecBPM ||
+			button.kind == buttonToggleSound {
+
+			mult := button.kind - buttonIncBPM
+
+			if button.kind == buttonToggleSound && !musicOn {
+				mult++
+			}
+
+			if button.hover {
+				options.GeoM.Translate(0, 1)
+			}
+			screen.DrawImage(smallbuttonsImage.SubImage(
+				image.Rect(mult*globalSmallButtonWidth, 0,
+					(mult+1)*(globalSmallButtonWidth),
+					globalSmallButtonHeight)).(*ebiten.Image),
 				options)
 			continue
 		}

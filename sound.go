@@ -79,6 +79,7 @@ type soundEngine struct {
 	audioContext *audio.Context
 	nextSounds   [numSounds]bool
 	sounds       [numSounds][]byte
+	mute         bool
 }
 
 // The list of existing sounds.
@@ -100,6 +101,11 @@ const (
 	soundBack
 	numSounds
 )
+
+// Toggle sound
+func (s *soundEngine) toggleSound() {
+	s.mute = !s.mute
+}
 
 // Initialisation of the sound engine (sound decoding).
 func newSoundEngine() (engine soundEngine) {
@@ -258,6 +264,8 @@ func (e *soundEngine) playNow() {
 
 // Play one sound by generating a new player.
 func (e soundEngine) playSound(ID int) {
-	soundPlayer := e.audioContext.NewPlayerFromBytes(e.sounds[ID])
-	soundPlayer.Play()
+	if !e.mute {
+		soundPlayer := e.audioContext.NewPlayerFromBytes(e.sounds[ID])
+		soundPlayer.Play()
+	}
 }

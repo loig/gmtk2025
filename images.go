@@ -47,6 +47,10 @@ var charsImage *ebiten.Image
 var subtitleBytes []byte
 var subtitleImage *ebiten.Image
 
+//go:embed assets/smallbuttons.png
+var smallbuttonsBytes []byte
+var smallbuttonsImage *ebiten.Image
+
 // load all images
 func loadImages() {
 	decoded, _, err := image.Decode(bytes.NewReader(tilesBytes))
@@ -78,4 +82,10 @@ func loadImages() {
 		log.Fatal(err)
 	}
 	subtitleImage = ebiten.NewImageFromImage(decoded)
+
+	decoded, _, err = image.Decode(bytes.NewReader(smallbuttonsBytes))
+	if err != nil {
+		log.Fatal(err)
+	}
+	smallbuttonsImage = ebiten.NewImageFromImage(decoded)
 }
