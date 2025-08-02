@@ -25,15 +25,17 @@ import (
 )
 
 type title struct {
-	onBeat bool
-	upChar int
+	onBeat    bool
+	upChar    int
+	upSubChar int
 }
 
 func (t title) draw(screen *ebiten.Image) {
 
+	// Title
 	for charNum := 0; charNum < 4; charNum++ {
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(charNum)*200, 100)
+		options.GeoM.Translate(float64(charNum)*200, 60)
 		if t.onBeat && t.upChar == charNum {
 			options.GeoM.Translate(0, -10)
 		}
@@ -42,7 +44,26 @@ func (t title) draw(screen *ebiten.Image) {
 			image.Rect(charNum*200, 0, (charNum+1)*200, 260)).(*ebiten.Image), options)
 	}
 
-	y := 450
+	// Subtitle
+	charPositions := [7]int{0, 1, 5, 2, 5, 3, 4}
+	charSizes := [7]int{50, 50, 20, 50, 20, 50, 50}
+	charX := 255
+	for pos, charPos := range charPositions {
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(charX), 320)
+
+		if t.upSubChar == pos+1 {
+			options.GeoM.Translate(0, -5)
+		}
+
+		screen.DrawImage(subtitleImage.SubImage(
+			image.Rect(charPos*50, 0, charPos*50+charSizes[pos], 55)).(*ebiten.Image), options)
+
+		charX += charSizes[pos]
+	}
+
+	// Click text
+	y := 460
 	if t.onBeat {
 		y -= 5
 	}
@@ -55,6 +76,7 @@ func (t *title) updateOnBeat() {
 	if !t.onBeat {
 		t.upChar = (t.upChar + 1) % 4
 	}
+	t.upSubChar = (t.upSubChar + 1) % 8
 }
 
 func (t *title) update() (done bool) {

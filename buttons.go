@@ -210,9 +210,11 @@ func (buttonSet buttonSet) draw(sequence []int, currentPosition int, inPlay bool
 		case buttonSequence:
 			imageNum = 15
 			directionNum = sequence[button.positionInSequence]
-			if (!button.hover && buttonSet.onBeat && !inPlay && directionNum == nothing) ||
+			if buttonSet.hasActive && buttonSet.activePosition == buttonNum {
+				imageNum = 17
+				directionNum += 2 * nothing
+			} else if (!button.hover && buttonSet.onBeat && !inPlay && directionNum == nothing) ||
 				(button.hover && !inPlay) ||
-				(buttonSet.hasActive && buttonSet.activePosition == buttonNum) ||
 				(button.hover && inPlay && (currentPosition != button.positionInSequence || !buttonSet.onBeat)) {
 				imageNum = 16
 				directionNum += nothing

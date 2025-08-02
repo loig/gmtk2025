@@ -45,7 +45,7 @@ func loadFonts() {
 	}
 }
 
-func drawTextAt(theText string, x, y float64, screen *ebiten.Image) {
+func drawTextAt(theText string, x, y float64, screen *ebiten.Image) (height float64) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x, y+2)
 	op.ColorScale.ScaleWithColor(color.RGBA{R: 0x54, G: 0x33, B: 0x44, A: 255})
@@ -57,4 +57,7 @@ func drawTextAt(theText string, x, y float64, screen *ebiten.Image) {
 	op.ColorScale.ScaleWithColor(color.RGBA{R: 0x8b, G: 0x40, B: 0x49, A: 255})
 	op.LineSpacing = ocpFace.Size * 1.5
 	text.Draw(screen, theText, ocpFace, op)
+
+	_, height = text.Measure(theText, ocpFace, ocpFace.Size*1.5)
+	return
 }

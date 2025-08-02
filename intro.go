@@ -32,21 +32,10 @@ func setupIntro() (i intro) {
 	i.beat = 0
 	i.step = 0
 	i.text = []string{
-		"July 22, 2010.",
-		"07:56 am.",
-		"",
-		"Initiating Cybernetic Unit Benchmark.",
-		"",
-		"Objective 1: Test looping system.",
-		"Objective 2: Evaluate sentience.",
-		"",
-		"Loading...",
-		"Setting up..",
-		"...",
-		"..",
-		"....",
-		"Ready.",
-		"",
+		"July 22, 2010.\n07:56 am.\n",
+		"Initiating Cybernetic Unit Benchmark.\n",
+		"Objective 1: Test looping system.\nObjective 2: Evaluate sentience.\n",
+		"Loading...\nSetting up..\n...\n..\n....\nReady.\n",
 		"Click to start.",
 	}
 	return
@@ -56,20 +45,10 @@ func setupEnd() (i intro) {
 	i.beat = 0
 	i.step = 0
 	i.text = []string{
-		"July 22, 2010.",
-		"11:41 pm.",
-		"",
-		"Cybernetic Unit Benchmark completed.",
-		"",
-		"Objective 1: Achieved.",
-		"Objective 2: Inconclusive.",
-		"",
-		"Closing session...",
-		"...",
-		"....",
-		"..",
-		"Done.",
-		"",
+		"July 22, 2010.\n11:41 pm.\n",
+		"Cybernetic Unit Benchmark completed.\n",
+		"Objective 1: Achieved.\nObjective 2: Inconclusive.\n",
+		"Closing session...\n...\n....\n..\nDone.\n",
 		"Click for new session.",
 	}
 	return
@@ -78,6 +57,7 @@ func setupEnd() (i intro) {
 func (l *intro) update() (done bool) {
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		l.step++
+		l.beat = 0
 		return l.step > len(l.text)
 	}
 
@@ -98,10 +78,10 @@ func (l *intro) updateOnBeat() (playSound bool) {
 
 func (l intro) draw(screen *ebiten.Image) {
 	x := 10
-	y := 20
+	y := 20.0
 	for pos := 0; pos < l.step && pos < len(l.text); pos++ {
-		drawTextAt(l.text[pos], float64(x), float64(y), screen)
-		y += 25
+		inc := drawTextAt(l.text[pos], float64(x), y, screen)
+		y += inc
 	}
 
 	if l.step < len(l.text) {
@@ -110,5 +90,9 @@ func (l intro) draw(screen *ebiten.Image) {
 			upTo = len(l.text[l.step])
 		}
 		drawTextAt(l.text[l.step][:upTo], float64(x), float64(y), screen)
+	}
+
+	if l.step < len(l.text) {
+		drawTextAt("Click for faster text", 480, float64(globalScreenHeight-40), screen)
 	}
 }

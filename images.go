@@ -43,6 +43,10 @@ var cursorImage *ebiten.Image
 var charsBytes []byte
 var charsImage *ebiten.Image
 
+//go:embed assets/subtitle.png
+var subtitleBytes []byte
+var subtitleImage *ebiten.Image
+
 // load all images
 func loadImages() {
 	decoded, _, err := image.Decode(bytes.NewReader(tilesBytes))
@@ -68,4 +72,10 @@ func loadImages() {
 		log.Fatal(err)
 	}
 	charsImage = ebiten.NewImageFromImage(decoded)
+
+	decoded, _, err = image.Decode(bytes.NewReader(subtitleBytes))
+	if err != nil {
+		log.Fatal(err)
+	}
+	subtitleImage = ebiten.NewImageFromImage(decoded)
 }
