@@ -351,7 +351,7 @@ func (e soundEngine) playSound(ID int) {
 		case soundBass, soundBass2, soundC2:
 			soundPlayer.SetVolume(0.2)
 		case soundC3, soundC4, soundC5, soundE3, soundE4, soundG3, soundG4:
-			soundPlayer.SetVolume(0.2)
+			soundPlayer.SetVolume(0.1)
 		case soundBlip:
 			soundPlayer.SetVolume(0.35)
 		}

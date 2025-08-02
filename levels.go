@@ -82,6 +82,18 @@ var basic3LevelBytes []byte
 //go:embed levels/basic4
 var basic4LevelBytes []byte
 
+//go:embed levels/automove1
+var automove1LevelBytes []byte
+
+//go:embed levels/automove2
+var automove2LevelBytes []byte
+
+//go:embed levels/automove3
+var automove3LevelBytes []byte
+
+//go:embed levels/automove4
+var automove4LevelBytes []byte
+
 // Set up the levels
 func initLevels() {
 
@@ -96,6 +108,11 @@ func initLevels() {
 	// From there auto moves can be used
 	levelSteps[0] = len(levelSet)
 	levelSet = append(levelSet, readLevel(learnautomoveLevelBytes))
+
+	levelSet = append(levelSet, readLevel(automove3LevelBytes))
+	levelSet = append(levelSet, readLevel(automove4LevelBytes)) // maybe a bit difficult?
+	levelSet = append(levelSet, readLevel(automove2LevelBytes))
+	levelSet = append(levelSet, readLevel(automove1LevelBytes))
 
 	// From there replace blocks can be used
 	levelSteps[1] = len(levelSet)
