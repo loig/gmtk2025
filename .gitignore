@@ -32,3 +32,4 @@ go.work.sum
 # .vscode/
 cub2
 *.xcf
+builds/*
