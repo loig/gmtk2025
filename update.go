@@ -141,8 +141,22 @@ func (g *game) Update() error {
 				g.setLevel()
 				if g.level == levelSteps[0] || g.level == levelSteps[1] || g.level == levelSteps[2] {
 					g.oldBpm = g.bpm
-					g.bpm = 50
+					switch g.level {
+					case levelSteps[0]:
+						g.bpm = 50
+					case levelSteps[1]:
+						g.bpm = 30
+					case levelSteps[2]:
+						g.bpm = 40
+					}
 					g.sequencer.setBpm(g.bpm)
+					for pos := 0; pos < len(g.character.moveSequence); pos++ {
+						if pos < 3 {
+							g.character.moveSequence[pos] = moveRight
+						} else {
+							g.character.moveSequence[pos] = moveDown
+						}
+					}
 				} else if g.level == levelSteps[0]+1 || g.level == levelSteps[1]+1 || g.level == levelSteps[2]+1 {
 					g.bpm = g.oldBpm
 					g.sequencer.setBpm(g.bpm)

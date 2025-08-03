@@ -66,11 +66,16 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 func (g game) drawLevelInfo(screen *ebiten.Image) {
 
-	text := fmt.Sprintf("Cybernetic Unit Benchmark ver. 0.%d", g.evolutionStep)
+	//if g.level == 0 {
+	//	drawTextAt("Cybernetic Unit Benchmark ver. 0.1", 20, 10, screen)
+	//} else {
+	text := fmt.Sprintf("C.U.B version 0.%d", g.evolutionStep)
 	if g.evolutionSubStep > 0 {
 		text = fmt.Sprintf("%s.%d", text, g.evolutionSubStep)
 	}
+	text = fmt.Sprintf("%s - experiment %d/%d", text, g.level+1, len(levelSet))
 	drawTextAt(text, 20, 10, screen)
+	//}
 
 	text = fmt.Sprintf("Freq. %d", g.bpm)
 	drawTextAt(text, 650, 10, screen)
@@ -82,9 +87,10 @@ func drawTuto(screen *ebiten.Image) {
 	drawTextAt("← Stop sound", 50, 50, screen)
 	drawTextAt("This is C.U.B →", 50, 150, screen)
 	drawTextAt("← Move C.U.B here", 535, 290, screen)
-	drawTextAt("Create loop\n     ↓", 320, 420, screen)
+	drawTextAt("    Create loop\n(only before start)\n         ↓", 265, 380, screen)
 	drawTextAt("Start loop\n  ↓", 10, 435, screen)
 	drawTextAt("Restart level\nor erase loop\n          ↓", 600, 400, screen)
+	drawTextAt(" Use only\nyour mouse", 40, 250, screen)
 }
 
 func drawLearningInfo(screen *ebiten.Image, levelNum int) {
@@ -99,5 +105,5 @@ func drawLearningInfo(screen *ebiten.Image, levelNum int) {
 		text += "loop restart"
 	}
 
-	drawTextAt(text, 100, 50, screen)
+	drawTextAt(text, 115, 400, screen)
 }

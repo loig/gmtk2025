@@ -344,16 +344,17 @@ func (e *soundEngine) playNow() {
 func (e soundEngine) playSound(ID int) {
 	if !e.mute {
 		soundPlayer := e.audioContext.NewPlayerFromBytes(e.sounds[ID])
-		soundPlayer.SetVolume(0.25)
+		volume := 0.7
+		soundPlayer.SetVolume(volume)
 		switch ID {
 		case soundHats2:
-			soundPlayer.SetVolume(0.15)
+			soundPlayer.SetVolume(volume - 0.2)
 		case soundBass, soundBass2, soundC2:
-			soundPlayer.SetVolume(0.2)
+			soundPlayer.SetVolume(volume - 0.1)
 		case soundC3, soundC4, soundC5, soundE3, soundE4, soundG3, soundG4:
-			soundPlayer.SetVolume(0.1)
+			soundPlayer.SetVolume(volume - 0.25)
 		case soundBlip:
-			soundPlayer.SetVolume(0.35)
+			soundPlayer.SetVolume(volume + 0.2)
 		}
 		soundPlayer.Play()
 	}
